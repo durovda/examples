@@ -1,4 +1,4 @@
-from _examples.orgunit import Orgunit, Position, NodeType
+from orgunit import Orgunit, Position, NodeType
 
 
 def test_how_to_use_orgunit():
