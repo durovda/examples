@@ -1,0 +1,57 @@
+@startuml
+
+package tests #DDDDDD {}
+
+package "model" #DDDDDD {
+    abstract class Node
+    class Orgunit
+    class Position
+}
+
+tests .up.> Orgunit
+    note right on link
+        эти классы используются для
+        создания тестовых данных
+    end note
+tests .up.> Position
+
+Orgunit -up-|> Node
+Position -up-|> Node
+Node .right.> NodeType : "    use"
+
+enum NodeType {
+Orgunit
+Position
+}
+
+abstract class Node {
+type : NodeType
+name
+# _parent
+# _children
+# _basic_roles
+--
+.. minimum ..
+have_parent()
+get_parent_chain_as_lines()
+have_basic_roles()
+get_basic_roles()
+..
+have_children()
+get_parent()
+get_parent_chain()
+get_children()
+add_child()
+add_basic_role()
+run_function_deep()
+# _add_parent_chain_by_lines()
+}
+
+class Orgunit {
+full_name
+manager
+}
+
+class Position
+
+@enduml

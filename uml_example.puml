@@ -1,0 +1,28 @@
+@startuml
+title Page Header
+'autonumber
+actor TestCase
+box "Internal Service" #LightBlue
+    participant ":I have a really\nlong name" as L
+    participant Alice
+end box
+TestCase -> L: init()
+L -> Alice: метод_01()
+activate Alice
+Alice -> UserRoleChangeHistory: метод_02()
+Alice -> Alice ++: метод_02_1()
+'activate Alice
+Alice -> UserRoleChange: метод_03()
+Alice -> UserRoleChange: метод_04()
+return **результат работы** метода_XXX
+'deactivate Alice
+Alice -> Bob: метод_02()
+deactivate Alice
+Bob -> Bob: Вызов внутри \nметода_02
+Alice <-- Bob: **результат** работы метода_02
+'class one
+'{
+'attrib1
+'+method()
+'}
+@enduml
