@@ -17,3 +17,8 @@ def test_patient_status_down():
     patients = PatientsRepository([1, 1, 1])
     patients.patient_status_down(2)
     assert patients._patients_db == [1, 0, 1]
+
+
+def test_get_status_by_patient_id():
+    patients = PatientsRepository([2, 2, 1])
+    assert patients.get_status_by_patient_id(3) == "Болен"
