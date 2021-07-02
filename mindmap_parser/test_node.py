@@ -1,4 +1,4 @@
-from mindmap_parser.mind_map import Node, calculate_level
+from mindmap_parser.mindmap import Node, calculate_level
 from spesial_asserts import assert_lines_equal
 
 
@@ -54,8 +54,9 @@ def test_create_children_based_on_lines():
                  '\t\t\tNode 1.1.1.2',
                  '\t\t\tNode 1.1.1.3',
                  '\t\tNode 1.1.2',
-                 '\tNode 1.2']
-    node_1.create_children_based_on_lines(raw_lines)
+                 '\tNode 1.2',
+                 '\t\tNode 1.2.1']
+    node_1.add_children_based_on_lines(raw_lines)
     expected_lines = ['Node 1',
                       '    Node 1.1',
                       '        Node 1.1.1',
@@ -63,7 +64,27 @@ def test_create_children_based_on_lines():
                       '            Node 1.1.1.2',
                       '            Node 1.1.1.3',
                       '        Node 1.1.2',
-                      '    Node 1.2']
+                      '    Node 1.2',
+                      '        Node 1.2.1']
+    actual_lines = []
+    node_1.add_self_to_lines(actual_lines)
+    assert_lines_equal(actual_lines, expected_lines)
+
+
+def test_create_children_based_on_lines_2():
+    node_1 = Node(raw_text='Node 1')
+    raw_lines = ['\tNode 1.1',
+                 '\t\tNode 1.1.1',
+                 '\t\tNode 1.1.2',
+                 '\tNode 1.2',
+                 '\tNode 1.3']
+    node_1.add_children_based_on_lines(raw_lines)
+    expected_lines = ['Node 1',
+                      '    Node 1.1',
+                      '        Node 1.1.1',
+                      '        Node 1.1.2',
+                      '    Node 1.2',
+                      '    Node 1.3']
     actual_lines = []
     node_1.add_self_to_lines(actual_lines)
     assert_lines_equal(actual_lines, expected_lines)
