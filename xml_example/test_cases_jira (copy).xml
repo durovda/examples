@@ -1,0 +1,1317 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project>
+    <projectId>10702</projectId>
+    <projectKey>DOZOR</projectKey>
+    <modelVersion>1.0</modelVersion>
+    <jiraVersion>8.4.1</jiraVersion>
+    <exportDate>2021-10-12 09:00:11 UTC</exportDate>
+    <folders>
+        <folder fullPath="Запись звука" index="44"/>
+        <folder fullPath="Запись звука/Запуск и хранение" index="2"/>
+        <folder fullPath="Запись звука/Конфигурация" index="0"/>
+        <folder fullPath="Запись звука/Ошибки(Исключения)" index="3"/>
+        <folder fullPath="Запись звука/Права" index="1"/>
+        <folder fullPath="Запись звука/Раздел &quot;запись звука&quot;" index="4"/>
+        <folder fullPath="Запись звука/Роли(Пользователи)" index="2"/>
+        <folder fullPath="Запись звука/Ротация" index="6"/>
+    </folders>
+    <testCases>
+        <testCase id="21170" key="DOZOR-T5356">
+            <attachments/>
+            <component><![CDATA[Конфигурация]]></component>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-22 13:12:19 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Конфигурация]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Конфигурация. Параметр " Максимальная длительность сеанса записи "]]></name>
+            <objective><![CDATA[https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=78942250<br /><br />https://miro.com/app/board/o9J_kk1znxo=/?moveToWidget=3074457363350843433&amp;cot=14<br /><br />https://jira.solarsecurity.ru/browse/DOZOR-50767<br /><br />]]></objective>
+            <owner>JIRAUSER18917</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[UI:Перейти в Конфигурация/Расширенные настройки/Глобальные настройки Endpoint Agent  global-settings.json<br />и проверить наличие параметра:<br />"Максимальная длительность сеанса записи (мин)" mic-record-max-period<br /><br />]]></description>
+                        <expectedResult><![CDATA[Параметр присутствуют]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4367" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Для параметра "Максимальная длительность сеанса записи (мин)":<br />Проверить значение по умолчанию,<br />Затем ввести значение менее 1<br />и более 10080]]></description>
+                        <expectedResult><![CDATA[Значение по умолчанию : 1440 мин<br />Для указанного параметра минимальное значение = 1 мин , максимальное = 10080 минут ( 1 неделя )<br />При попытке ввода некорректных значений поле становится красным и появляется предупреждение с указанием диапазона допустимых значений]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Проверить наличие параметра в /data/repos/dozor/config-final.git/имя-ноды/smap-agents/global-settings.json]]></description>
+                        <expectedResult><![CDATA[параметр присутствуют в виде<br />"ключ" : значение]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4368" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить наличие параметра<br />MicRecordMaxPeriod<br />и его значение в<br />/data/spool/dozor/agent-server/agents/айди-агента/settings.xml<br />cat settings.xml | grep MicRecordMax]]></description>
+                        <expectedResult><![CDATA[Параметры присутствуют<br />Значение соответсвует выставленному в конфигурации]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4369" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Через UI изменить значения параметра на значение из допустимого диапазона и сохранить.<br />Проверить что в<br />/data/repos/dozor/config-final.git/имя-ноды/smap-agents/global-settings.json<br />и<br />/data/spool/dozor/agent-server/agents/айди-агента/settings.xml<br />изменились значения параметра]]></description>
+                        <expectedResult><![CDATA[Параметр изменен и сохранен<br />Параметр изменен в конфигурационных файлах]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 14:42:42 UTC</updatedOn>
+        </testCase>
+        <testCase id="21172" key="DOZOR-T5358">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-22 16:12:36 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Права]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-46210</key>
+                    <summary><![CDATA[Добавление новых прав доступа к трансляции экрана и их настройка]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Добавление и настройка прав для доступа к записи звука ЧЕРНОВИК]]></name>
+            <owner>JIRAUSER18917</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в раздел  Пользователи/Управление доступом/Роли]]></description>
+                        <expectedResult><![CDATA[По умолчанию раздел Пользователи/Управление доступом/Роли содержит Роли:<br />Администраторы безопасности, Системные администраторы, Суперадминистраторы.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/3088" style="width:300px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Добавить новую роль в Пользователи/Управление доступом/Роли]]></description>
+                        <expectedResult><![CDATA[Новая роль добавлена.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/3091" style="width:300px" class="fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Справа в списке прав нового пользователя пройти в раздел прав  "Досье"]]></description>
+                        <expectedResult><![CDATA[В разделе прав "Досье" есть блок :  "Доступ к записи звука".<br />Справа от надписи "Доступ к записи звука" есть иконка - (?) , при нажатии на которую всплывает подсказка содержащая следующий текст:<br /><br />[?]<br /><br />"Доступ к трансляции экрана" содержит два radiobutton (ВОЗМОЖНО ТРИ, УТОЧНИТЬ У МИШИ):<br />1) Разрешено<br />2) Нет доступа (значение по умолчанию)<br />По умолчанию выбран radiobutton"Нет доступа" и ниже не доступны четыре выпадающих списка (при невыбранных значениях в пустых полях располагаются плейсхолдеры-подсказки):<br />1) Доступны только группы персон (плейсхолдер "Выберите ограничения для группы персон")<br />2) Доступны только персоны (плейсхолдер "Выберите ограничения по персонам")<br />3) Запрещенные группы персон (плейсхолдер "Выберите исключения по группам персон")<br />4) Запрещенные персоны (плейсхолдер "Выберите исключения по персонам")<br /><br /><br />]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/3127" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[В разделе прав "Досье" в блоке  "Доступ к трансляции экрана" выбрать radiobutton "Разрешено"]]></description>
+                        <expectedResult><![CDATA[Поля:<br />1) Доступны только группы персон<br />2) Доступны только персоны<br />3) Запрещенные группы персон<br />4) Запрещенные персоны<br /><br />Становятся активными]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/3128" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть список "Доступны только группы персон" ]]></description>
+                        <expectedResult><![CDATA[Для "Доступны только группы персон" открылся выпадающий список групп досье (неполный) и ГОК.<br />В  поле с плейсхолдером возможен ввод и по введенным символам работает поиск и сортировка списка.<br />Доступен выбор нескольких групп досье и ГОК одновременно.<br />Доступна отмена выбранных групп досье и ГОК.<br />При сворачивании списка остаются выбранные группы и активируются кнопка "Сохранить"]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть список "Запрещенные группы персон"]]></description>
+                        <expectedResult><![CDATA[Для "Запрещенные группы персон" открылся выпадающий список групп досье (неполный) и ГОК.<br />В поле с плейсхолдером возможен ввод и по введенным символам работает поиск и сортировка списка.<br />Доступен выбор одной или нескольких групп досье и ГОК одновременно.<br />Доступна отмена выбранных групп досье и ГОК.<br />При сворачивании списка остаются выбранные группы и активируются кнопка "Сохранить"]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть список "Доступны только персоны"]]></description>
+                        <expectedResult><![CDATA[Для "Доступны только персоны" открылся выпадающий список персон(неполный).<br />В поле с плейсхолдером возможен ввод и по введенным символам работает поиск и сортировка списка.<br />Доступен выбор одной персоны или нескольких персон одновременно.<br />Доступна отмена выбранных персон.<br />При сворачивании списка остаются выбранные персоны и активируются кнопка "Сохранить"]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть список "Запрещенные персоны"]]></description>
+                        <expectedResult><![CDATA[Для "Запрещенные персоны" открылся выпадающий список персон(неполный).<br />В пустом поле возможен ввод и по введенным символам работает поиск и сортировка списка.<br />Доступен выбор одной персоны или нескольких персон одновременно.<br />Доступна отмена выбранных персон.<br />При сворачивании списка остаются выбранные персоны и активируются кнопка "Сохранить"]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[В разделе прав "Досье" в блоке  "Доступ к записи звука" выбрать radiobutton "Нет доступа"]]></description>
+                        <expectedResult><![CDATA[Поля:<br />1) Доступны только группы персон<br />2) Доступны только персоны<br />3) Запрещенные группы персон<br />4) Запрещенные персоны<br /><br />Становятся неактивны (задизейблены)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-09-22 16:49:26 UTC</updatedOn>
+        </testCase>
+        <testCase id="21173" key="DOZOR-T5359">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-22 16:12:36 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Права]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-46210</key>
+                    <summary><![CDATA[Добавление новых прав доступа к трансляции экрана и их настройка]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Доступность настроек записи звука при отсутствии лицензии на модуль "Модуль контроля действий пользователей рабочих станции" (endpoint-agent) ЧЕРНОВИК]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[Заказать лицензию Дозора без "Модуль контроля действий пользователей рабочих станции" (endpoint-agent) <br/>В Пользователи/Роли предварительно создана новая роль.]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Загрузить лицензию с "Модуль контроля действий пользователей рабочих станции" (endpoint-agent)  (например полную лицензию)<h1><br /></h1>]]></description>
+                        <expectedResult><![CDATA[Лицензия успешно загружена]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Перейти в Пользователи/Роли/Новая роль  и проверить в блоке "Досье" наличие настроек доступа к записи звука.]]></description>
+                        <expectedResult><![CDATA[в блоке "Досье" ПРИСУТСТВУЮТ настройки доступа к записи звука (Доступ к записи звука)]]></expectedResult>
+                        <testData><![CDATA[]]></testData>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Загрузить лицензию без "Модуль контроля действий пользователей рабочих станции" (endpoint-agent)  ]]></description>
+                        <expectedResult><![CDATA[Лицензия успешно загружена]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в Пользователи/Роли/Новая роль  и проверить в блоке "Досье" наличие настроек доступа к записи звука.]]></description>
+                        <expectedResult><![CDATA[в блоке "Досье" ОТСУТСТВУЮТ настройки доступа трансляции экрана (Доступ к записи звука)]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Повторить шаги 1, 2 и убедиться, что настройки доступа к записи звука снова появились.]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-09-22 17:03:29 UTC</updatedOn>
+        </testCase>
+        <testCase id="21176" key="DOZOR-T5362">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-22 16:12:36 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Права]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-46210</key>
+                    <summary><![CDATA[Добавление новых прав доступа к трансляции экрана и их настройка]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Экспорт/импорт ролей с доступом к записи звука ЧЕРНОВИК]]></name>
+            <owner>JIRAUSER18917</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в раздел &nbsp;Пользователи/Управление доступом/Роли]]></description>
+                        <expectedResult><![CDATA[переход осуществлен]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/3093" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[1) Добавить роль newrole1 и в блоке "Досье" выбрать "Разрешено" <br/>2) Выбрать для newrole1 в блоке "Досье" по несколько групп в выпадающих списках :<br/>Доступны только группы персон<br/>Запрещенные группы персон<br/>2) Сохранить<br/><br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[успешно]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[1) Добавить роль newrole2 и в блоке "Досье" выбрать "Разрешено"<br/>2) Выбрать для newrole2 в блоке "Досье" по несколько персон в выпадающих списках :<br/>Доступны только персоны<br/>Запрещенные персоны<br/>2) Сохранить<br/><br/>]]></description>
+                        <expectedResult><![CDATA[успешно]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[1) Добавить роль newrole3 и в блоке "Досье" выбрать "Разрешено"<br/>2) Выбрать для newrole3 в блоке "Досье" по несколько персон в выпадающих списках :<br/>Доступны только персоны<br/>Запрещенные персоны<br/>,<br/>по несколько групп в выпадающих списках :<br/>Доступны только группы персон<br/>Запрещенные группы персон<br/>2) Сохранить<br/><br/>]]></description>
+                        <expectedResult><![CDATA[успешно]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Сделать экспорт всех ролей ( Роли/Экспортировать )<br/>Сделать экспорт каждой новой роли ( Роли/Роль/Экспортировать )]]></description>
+                        <expectedResult><![CDATA[Все экспорты завершились успешно. Сформированы json с экспортированными ролями ( Для всех ролей Export Roles дата время , для каждой роли Export Role дата время)]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Удалить все новые роли (newrole)]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Импортировать каждую новую роль (newrole) заново (Export Role) поочередно и проверить соответствие настроек доступа для каждой.]]></description>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[Удалить все новые роли (newrole)]]></description>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Имопртировать все роли сразу (Export Roles) и проверить соответствие настроек доступа для каждой.]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-09-22 17:19:13 UTC</updatedOn>
+        </testCase>
+        <testCase id="21178" key="DOZOR-T5364">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-22 16:18:28 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Права]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-46210</key>
+                    <summary><![CDATA[Добавление новых прав доступа к трансляции экрана и их настройка]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Проверка настроек доступа к записи звука у системных ролей ЧЕРНОВИК]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[Под системными ролями понимаются роли:<br/>Администраторы безопасности<br/>Системные администраторы<br/>Суперадминистраторы]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в Пользователи/Роли/Администраторы безопасности/Досье]]></description>
+                        <expectedResult><![CDATA[Переход осуществлен]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что у роли "Администраторы безопасности" значение поля "Доступ к записи звука" - "Разрешено"]]></description>
+                        <expectedResult><![CDATA[У роли "Администраторы безопасности" значение поля "Доступ к записи звука" - "Разрешено"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Перейти в Пользователи/Роли/Системные администраторы/Досье]]></description>
+                        <expectedResult><![CDATA[Переход осуществлен]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить ,что у роли "Системные администраторы" значение поля "Доступ к записи звука" - "Нет доступа"]]></description>
+                        <expectedResult><![CDATA[Что у роли "Системные администраторы" значение поля "Доступ к записи звука" - "Нет доступа"]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Перейти в Пользователи/Роли/Суперадминистраторы/Досье]]></description>
+                        <expectedResult><![CDATA[Переход осуществлен]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[В независимости от значения поля "Доступ к записи звука" ("разрешено" или "нет доступа") у Суперадминистраторов есть доступ ко всему функционалу.]]></description>
+                        <expectedResult><![CDATA[Вероятно поведение изменится (когда-нибудь), но сейчас отображение роли в UI не связано с фактическими полномочиями Суперадминистратора. Фактически он имеет доступ ко всему функционалу.]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-09-22 17:08:06 UTC</updatedOn>
+        </testCase>
+        <testCase id="21257" key="DOZOR-T5384">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 17:12:53 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на агенте(с настройками без перехвата)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен агент, в группе станций выбраны настройки без перехвата, агент связан с персоной из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Review]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск и переход на карточку персоны с установленным агентом(без перехвата)<br /><br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить запись звука для этой персоны\станции<br /><br />Проверить, что на экран вывелось корректное сообщение об ошибке]]></description>
+                        <expectedResult><![CDATA[Пользователю вывелось сообщение о невозможности запустить запись звука ( Установленный агент неполнофункциональный)]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть полную карточку персоны и повторить попытку включения записи звука]]></description>
+                        <expectedResult><![CDATA[На полной карточке запись звука также не удалось запустить<br /><br />Пользователю вывелось сообщение о невозможности записи звука (Установленный агент неполнофункциональный)]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Добавить еще одну рабочую станцию для персоны<br /><br />Проверить, что сообщение об ошибке(для агента без перехвата) корректно показывается в случае выбора станции из нескольких]]></description>
+                        <expectedResult><![CDATA[Сообщение об ошибке корректно работает при наличии у пользователя нескольких станций как из краткой, так и из полной карточки]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Перейти в группу станций с установленным агентом для рассматриваемой персоны<br /><br />Изменить настройки перехвата на полнофункциональные]]></description>
+                        <expectedResult><![CDATA[Настройки перехвата для текущей станции успешно изменены с "Без перехвата" на "Полнофункциональные"]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Снова попытаться запустить запись звука с краткой и полной карточек персоны<br /><br />Проверить, что ошибка больше не воспроизводится]]></description>
+                        <expectedResult><![CDATA[Запись звука с полной и краткой карточки успешно запускается для персоны после изменения настроек агента на полнофункциональный]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-28 18:35:20 UTC</updatedOn>
+        </testCase>
+        <testCase id="21258" key="DOZOR-T5385">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 17:25:33 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на агенте(статус деактивирован)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен агент с полнофункциональными настройками перехвата, агент связан с персоной из Досье<br />Агент деактивирован]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Review]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с установленным агентом(деактивированным)<br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Осуществить запуск записи звука с деактивированной станции на краткой карточке<br /><br />Проверить, что пользователю выдается корректное сообщение об невозможности запуска записи на такой станции]]></description>
+                        <expectedResult><![CDATA[При попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука на деактивированной станции]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть полную карточку персоны, попытаться запустит запуск звука с полной карточки<br /><br />Проверить, что пользователю выдается корректное сообщение об невозможности запуска записи на такой станции]]></description>
+                        <expectedResult><![CDATA[На полной карточке персоны при попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука на деактивированной станции]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Добавить еще одну рабочую станцию для персоны<br /><br />Проверить, что сообщение об ошибке(для деактивированного агента) корректно показывается в случае выбора станции из нескольких]]></description>
+                        <expectedResult><![CDATA[Сообщение об ошибке корректно работает при наличии у пользователя нескольких станций как из краткой, так и из полной карточки]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Перейти в зону Перехватчики - Endpoint Agent - Станции<br />Выбрать ранее деактивированную станцию, осуществить активацию этой станции<br /><br />Проверить спустя время, что станция активировалась и имеет соответствующий подстатус]]></description>
+                        <expectedResult><![CDATA[Станция из режима "Деактивирован" перешла в полностью рабочее состояние, активация успешно завершена]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Снова открыть краткую карточку ранее проверяемой персоны и запустить запись звука<br /><br />Проверить, что сообщение о невозможности запуска больше не отображается<br /><br />Повторить проверку для полной карточки персоны]]></description>
+                        <expectedResult><![CDATA[Запуск записи звука на краткой и полных карточках персоны успешно осуществляется после смены статуса агента с "Деактивированного" на рабочий]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-28 19:04:54 UTC</updatedOn>
+        </testCase>
+        <testCase id="21259" key="DOZOR-T5386">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-09-28 17:40:35 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Запуск и хранение]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Базовый механизм записи звука]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[В дозоре есть персона имеющая 2 и более станции с установленными на них агентами<br />(Настроен параметр Максимальная длительность записи (мин) mic-record-max-period на 3 минуты)]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в маленькую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Выбрать вручную одну станцию из списка и кликнуть на нее<br />Тем самым создастся задача для агента.<br /><br />(<br />задачу на агента можно эмулировать curl'ом<br />curl  --cacert /opt/dozor/elasticsearch/config/ca.crt --key /opt/dozor/elasticsearch/config/bus.key --cert /opt/dozor/elasticsearch/config/bus.pem --location --request POST 'https://vm1020130247.solar.local:3006/agents/tasks/create' \<br />--header 'Content-Type: application/json' \<br />--data '{"user":"superadmin","agentId":"8058cdbf-c40e-47b2-ab13-6c5d56bb71d8","agentTaskParams":{"taskType":"mic-record-start","args":{"login":"User","sid":"S-1-5-21-2652311848-583692439-2486967358-1000"}}}'<br /><br />поменять: путь до стенда, agentId, пользователя в аргументах и sid (если отличается от вашего)<br />)]]></description>
+                        <expectedResult><![CDATA[Открылось модальное окно "Запись звука" ( пока не рабочее ) <br /><br />(ответ на curl:<br /><pre><code>{"taskId":"05416068-88b9-4df7-ad54-f63b37249c10","agentId":"6bf6da70-8739-41b4-873d-2ac067bbb7ea","taskType":"mic-record-start","user":"superadmin","args": "sid":"S-1-5-21-2652311848-583692439-2486967358-1000","login":"User"},"createDate":"2021-10-06T20:14:01.378716+03:00","modifyDate":"2021-10-06T20:14:01.378716+03:00","status":"new"}</code>
+<code>)</code></pre><br />]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[На ноде с ролью "сервер агентов":<br />Проверить, что в агентской базе создалась задача на старт записи звука (mic-rec-start)<br />psql -p 5434 -h localhost -U dozor<br />select task_id,agent_id,type,create_date,modify_date,start_date,finish_date,status from ea_agent_task;]]></description>
+                        <expectedResult><![CDATA[Задача mic-rec-start появилась в статусе new ]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[подождать некоторое время (10-20 сек)<br />Повторно выполнить:<br />psql -p 5434 -h localhost -U dozor<br />select task_id,agent_id,type,create_date,modify_date,start_date,finish_date,status from ea_agent_task;<br />Проверить, что задача изменила статус на running<br />(т.е. задача отдалась агенту на исполнение)<br /><br />(<br />Можно эмулировать передачу задачи через curl<br />curl --key /opt/dozor/etc/ssl/bus.key --cert /opt/dozor/etc/ssl/bus.pem -k --insecure -X GET "https://vm1020129103.solar.local:4444/agents/6bf6da70-8739-41b4-873d-2ac067bbb7ea/tasks"<br /><br />поменять: путь до стенда в урле, id агента<br />)<br /><br />]]></description>
+                        <expectedResult><![CDATA[задача в таблице ea_agent_task переходит в статус running<br /><br />ответ:<pre><code>[{"id":"05416068-88b9-4df7-ad54-f63b37249c10","type":"mic-record-start","args":{"sid":"S-1-5-21-2652311848-583692439-2486967358-1000","login":"User"}}]</code>
+
+
+после выполнения curl задача в таблице ea_agent_task переходит в статус running</pre>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Проверить , что в таблице с пингами агента в пинге агента выполняющего задачу есть статус running<br />select hostname,timestamp,value,users,uuid,ip from ea_agent_ping where ip = '{ip-агента}';<br /><br />(можно эмулировать фейковый пинг от агента используя curl<br />curl --key /opt/dozor/etc/ssl/bus.key --cert /opt/dozor/etc/ssl/bus.pem -k --insecure -X POST "https://vm1020130247.solar.local:4444/agents/8058cdbf-c40e-47b2-ab13-6c5d56bb71d8/status" \<br />-H "host: 10.201.30.247:4444" \<br />-H "user-agent: Agent/1.0" \<br />-H "content-type: application/json" \<br />--data '{ "configurationDateTime": "1633527027000", "shortLived": false, "unixtime": "1633531424999", "hostname": "agentwin1", "RebootRequired": false, "tasks": [{"finishDate": "2021-10-07T20:16:03.279Z", "id": "4652415e-df43-4385-8d1f-e4eab66dcaf9", "startDate": "2021-10-07T20:14:01.378Z", "status": "done"}], "sourceAddresses": ["10.201.28.52", "10.201.30.247"], "id": "8058cdbf-c40e-47b2-ab13-6c5d56bb71d8", "os": "Microsoft Windows 7 Professional Edition 64-bit", "domain": "", "version": "4.1.0.365", "policyDateTime": "1632998381000", "enabled": true, "users": [{"login": "agentwin1\\User", "session": "1", "sid": "S-1-5-21-2652311848-583692439-2486967358-1000"}]}'<br /><br />поменять: путь до стенда, в урле ид агента, в хедерах хост, в дате поле tasks, в дате sourceAddresses заменить "10.201.29.103" на стенд с которого вызвается курл, и в дате users ]]></description>
+                        <expectedResult><![CDATA[в value есть "status":"running"<br /><br />В интерфейсе есть уведомление "задача на рабочей станции выполняется"]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[дождаться окончания выполнения задачи ( определяется значением параметра Максимальная длительность записи (мин) mic-record-max-period )<br /><br />select task_id,agent_id,type,create_date,modify_date,start_date,finish_date,status from ea_agent_task;<br /><br />]]></description>
+                        <expectedResult><![CDATA[в поле status задача в статусе done]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Перейти в /data/storage/audio/год/месяц/день/час/минута старта записи и проверить, что запись после завершения задачи  сохранена<br /><br />(В случае отсутствия работающего агента можно эмулировать передачу файла и мета-данных используя curl<br /><br />curl --key /opt/dozor/etc/ssl/bus.key --cert /opt/dozor/etc/ssl/bus.pem -k --insecure -X POST "https://vm1020129103.solar.local:4444/agents/6bf6da70-8739-41b4-873d-2ac067bbb7ea/data" \<br />-H "x-agent-attachments-count : 1" \<br />-H "x-agent-object-date : Tue, 06 Oct 2021 21:35:10 +0300" \<br />-H "x-agent-client-id : 6bf6da70873941b4873d2ac067bbb7ea" \<br />-H "user-agent : Agent/1.0" \<br />-H "content-type : audio/mpeg" \<br />-H "x-agent-user-login : =?utf-8?Q?=41=4C=4C=45=42=45=44=45=56=57=49=4E=41=47=45=5C=55=73=65=72?=" \<br />-H "x-agent-date : =?utf-8?Q?=74=75=65=2C=20=30=35=20=6F=63=74=20=32=30=32=31=20=31=37=3A=34=39=3A=31=30=20=2B=30=33=30=30?=" \<br />-H "accept : */*" \<br />-H "x-agent-protocol : Agent.Sound" \<br />-H "x-agent-user-sid : =?utf-8?Q?=53=2D=31=2D=35=2D=32=31=2D=32=36=35=32=33=31=31=38=34=38=2D=35=38=33=36=39=32=34=33=39=2D=32=34=38=36=39=36=37=33=35=38=2D=31=30=30=30?=" \<br />-H "x-agent-action : Allowed.Invisible" \<br />-H "x-agent-timestamp : 1633456150" \<br />-H "x-agent-src-address : 10.201.28.58" \<br />-H "x-agent-hostname : =?utf-8?Q?=61=6C=6C=65=62=65=64=65=76=57=69=6E=41=67=65=6E=74?=" \<br />-H "x-agent-importance : Undefined" \<br />--data-binary @motivation.mp3<br /><br />запускать там где лежит аудиофайл или прописать путь до файла. поменять: x-agent-client-id, x-agent-user-login, x-agent-user-sid, x-agent-src-address, x-agent-hostname.<br />значения в этих параметрах указаны в hexadecimal. после конвертации текста в hexadecimal нужно добавить знаки = между значениями.<br />)]]></description>
+                        <expectedResult><![CDATA[по указанному пути находится архив .gz содержащий файл]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[Перейти в большую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[повторить шаги 2-4]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 14:01:49 UTC</updatedOn>
+        </testCase>
+        <testCase id="21260" key="DOZOR-T5387">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 17:42:36 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на выключенном агенте( Не в сети)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, агент связан с персоной из Досье<br />Станция с агентом выключена]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Review]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с установленным и выключенным агентом<br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Убедиться что агент отображается у персоны как не в сети( указана последняя активность)<br /><br />Осуществить запуск записи звука с выключенной станции на краткой карточке<br /><br />Проверить, что пользователю выдается корректное сообщение об ошибке]]></description>
+                        <expectedResult><![CDATA[При попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука на выключенной станции]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть полную карточку персоны, попытаться запустить запуск звука с полной карточки<br /><br />Проверить, что пользователю выдается корректное сообщение об невозможности запуска записи на выключенной станции]]></description>
+                        <expectedResult><![CDATA[На полной карточке персоны при попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука для выключенной станции]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Добавить еще одну рабочую станцию для персоны<br /><br />Проверить, что сообщение об ошибке(для агента не в сети) корректно показывается в случае выбора станции из нескольких]]></description>
+                        <expectedResult><![CDATA[Сообщение об ошибке корректно работает при наличии у пользователя нескольких станций как из краткой, так и из полной карточки]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Включить проверяемую станцию с агентом и залогиниться уз персоны<br /><br />Проверить, что после появления в сети ошибка при запуске записи больше не воспроизводится<br /><br />Проверить исчезновение ошибки запуска записи звука с краткой и полной карточек персоны]]></description>
+                        <expectedResult><![CDATA[После появление станции в сети ошибка недоступности станции не воспроизводится при запуске записи звука из краткой и полной карточки персоны]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-28 19:03:11 UTC</updatedOn>
+        </testCase>
+        <testCase id="21263" key="DOZOR-T5389">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 18:54:05 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на выключенном агенте(Недоступность сервиса)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, агент связан с персоной из Досье<br />Остановлен сервис agent-control-ng ( + agent-server)]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Review]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с установленным рабочим агентом<br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Осуществить остановку сервисов участвующих в запуске задачи на запись звука]]></description>
+                        <expectedResult><![CDATA[Сервисы успешно остановлены]]></expectedResult>
+                        <testData><![CDATA[dsctl stop agent-control-ng<br />dsctl stop agent-server]]></testData>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[<br />Осуществить запуск записи звука с выключенными сервисами<br /><br />Проверить, что пользователю выдается корректное сообщение об ошибке]]></description>
+                        <expectedResult><![CDATA[При попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука ]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть полную карточку персоны, попытаться запустить запуск звука с полной карточки<br /><br />Проверить, что пользователю выдается корректное сообщение об невозможности запуска записи]]></description>
+                        <expectedResult><![CDATA[На полной карточке персоны при попытке запуска пользователю вывелось корректное и понятное сообщение о невозможности запуска записи звука]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Добавить еще одну рабочую станцию для персоны<br /><br />Проверить, что сообщение об ошибке(для агента не в сети) корректно показывается в случае выбора станции из нескольких]]></description>
+                        <expectedResult><![CDATA[Сообщение об ошибке корректно работает при наличии у пользователя нескольких станций как из краткой, так и из полной карточки]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Включить ранее выключенные сервисы<br /><br />Проверить, что после возобновления работы сервисов  ошибки при запуске записи больше не воспроизводится<br /><br />Проверить исчезновение ошибки запуска записи звука с краткой и полной карточек персоны]]></description>
+                        <expectedResult><![CDATA[После возобновления работоспособности сервисов ошибка не воспроизводится при запуске записи звука из краткой и полной карточки персоны]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-28 18:59:07 UTC</updatedOn>
+        </testCase>
+        <testCase id="21264" key="DOZOR-T5390">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:08:43 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука(незавершенная задача)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, агент связан с персоной из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с агентом и открыть краткую карточку  персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить задачу на запись звука с карточки<br />Убедиться, что задача успешно стартовала]]></description>
+                        <expectedResult><![CDATA[Задача по записи звука успешно стартовала]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Попытаться осуществить повторный запуск записи звука по уже существующей задаче ранее]]></description>
+                        <expectedResult><![CDATA[Повторно невозможно запустить задачу, кнопка не реагирует на повторный запуск(выведено понятное сообщение)]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Открыть полную карточку, проверить что повторно существующая задача также не запускается]]></description>
+                        <expectedResult><![CDATA[Из полной карточки персоны повторно также невозможно запустить уже запущенную задачу]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что незавершенная задача также не запускается из:<br /><br />1) Новой отдельной вкладки<br />2) Другого браузера под тем же пользователем]]></description>
+                        <expectedResult><![CDATA[Задачу повторно невозможно запустить, кнопка не реагирует на повторный запуск(выведено понятное сообщение)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 11:07:40 UTC</updatedOn>
+        </testCase>
+        <testCase id="21265" key="DOZOR-T5391">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:09:14 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука другим пользователем(Незавершенная задача)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, агент связан с персоной из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с агентом и открыть краткую карточку  персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить задачу на запись звука с карточки<br />Убедиться, что задача успешно стартовала]]></description>
+                        <expectedResult><![CDATA[Задача по записи звука успешно стартовала]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Войти в систему новым пользователем<br /><br />Попытаться осуществить повторный запуск записи звука по уже существующей задаче ранее]]></description>
+                        <expectedResult><![CDATA[Повторно невозможно запустить задачу, кнопка не реагирует на повторный запуск(выведено понятное сообщение)]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить вторым пользователем, что повторно невозможно запустить задачу из обеих карточек персоны(краткой и полной)]]></description>
+                        <expectedResult><![CDATA[Повторно невозможно запустить задачу, как из краткой так и из полной вторым пользователем]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 12:10:08 UTC</updatedOn>
+        </testCase>
+        <testCase id="21266" key="DOZOR-T5392">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:11:27 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука(с другой станции для той же персоны)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлено два агента на разных станциях, с привязкой одной персоны]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с агентом и открыть краткую карточку  персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Осуществить запуск записи звука с одной из рабочих станций персоны]]></description>
+                        <expectedResult><![CDATA[Запись звука успешно запущена, создана задача с соответствующим типом]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Повторно запустить запуск звука, выбрав еще одну станцию у персоны<br />Проверить, что запуск записи звука также успешно запуститься]]></description>
+                        <expectedResult><![CDATA[Запуск записи звука успешно стартовал с второй станции этой же персоны]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что для одной персоны можно запустить запись звука повторно на другой станции из разных мест:<br /><br />1)Полная карточка персоны<br />2)Новая вкладка с dozor<br />3)Другой браузер]]></description>
+                        <expectedResult><![CDATA[Запуск звука успешно стартует повторно для персоны с второй станции]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 13:30:10 UTC</updatedOn>
+        </testCase>
+        <testCase id="21267" key="DOZOR-T5393">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:11:51 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука другим пользователем(с другой станции для той же персоны)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлено два полнофункциональных рабочих агента, станции привязаны к одной персоне<br />Заведен второй пользователь в Dozor]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с агентом и открыть краткую карточку  персоны]]></description>
+                        <expectedResult><![CDATA[Успешно открыта краткая карточка персоны]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Осуществить запуск записи звука с одной из рабочих станций персоны]]></description>
+                        <expectedResult><![CDATA[Запись звука успешно запущена, создана задача с соответствующим типом]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Войти в систему под вторым пользователем(администратором )<br /><br />Повторно запустить запуск звука, выбрав еще одну станцию у персоны<br />Проверить, что запуск записи звука также успешно стартует]]></description>
+                        <expectedResult><![CDATA[Запуск записи звука успешно стартовал с второй станции этой же персоны под другим пользователем]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить вторым пользователем, что для одной персоны можно запустить запись звука повторно на другой станции из полной карточки аналогично краткой]]></description>
+                        <expectedResult><![CDATA[Повторный запуск записи звука для одной персоны(другой станции) успешно запускается из полной карточки(аналогично краткой) другим пользователем]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 16:47:26 UTC</updatedOn>
+        </testCase>
+        <testCase id="21268" key="DOZOR-T5394">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:24:45 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука другим пользователем(одна станция, другая персона)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, на станциях авторизован и осуществлен вход двумя персонами<br/>В Dozor заведен второй пользователь(администратор)]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с установленным агентом<br />Раскрыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить для первой персоны запись звука<br />Проверить успешный старт задачи]]></description>
+                        <expectedResult><![CDATA[Задача на запись звука успешно стартовала]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Войти в Dozor другим пользователем<br /><br />Выбрать вторую персону связанную с проверяемым агентом и открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Вход вторым пользователем успешно осуществлен<br /><br />Осуществлен переход к карточке второй персоны]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Попытаться запустить для этой персоны запись звука<br /><br />Проверить, что запись звука невозможно запустить]]></description>
+                        <expectedResult><![CDATA[Запись звука невозможно запустить повторно в этом случае для второго пользователя]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Перейти на полную карточку персоны и проверить, что  с полной карточки запуск также невозможен]]></description>
+                        <expectedResult><![CDATA[Запись звука невозможно запустить повторно в этом случае для второго пользователя с полной карточки персоны]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 17:33:51 UTC</updatedOn>
+        </testCase>
+        <testCase id="21269" key="DOZOR-T5395">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-28 19:25:27 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Роли(Пользователи)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Повторный запуск записи звука(одна станция, другая персона)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, на станциях авторизован и осуществлен вход двумя персонами<br /><br />]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны с установленным агентом<br />Раскрыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить запись звука для этой персоны<br /><br />Проверить, что задача успешно стартовала]]></description>
+                        <expectedResult><![CDATA[Запись звука успешно стартовала, задача запущена]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Перейти к станции и выбрать вторую связанную с агентом персону<br /><br />Раскрыть краткую карточку этой персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка второй персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Попытаться запустить  задачу для второй персоны с той же станции]]></description>
+                        <expectedResult><![CDATA[Задачу невозможно запустить в этом случае<br />Пользователю вывелось понятное сообщение об ошибке]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что для второй персоны также невозможно запустить задачу из других мест\состояний:<br /><br />1)Полная карточка персоны<br />2)Новая вкладка с Dozor<br />3)Из другого браузера тем же пользователем]]></description>
+                        <expectedResult><![CDATA[Во всех случаях аналогично запустить запись звука по второй персоне невозможно<br /><br />Пользователю вывелось понятное сообщение об ошибке]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 17:38:36 UTC</updatedOn>
+        </testCase>
+        <testCase id="21285" key="DOZOR-T5405">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-29 17:34:37 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на агенте старой версии(без поддержки записи звука)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен агент старой версии( без поддержки записи звука), агент связан с персоной из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск персоны связанной с агентом старой версии<br /><br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Попытаться запустить запись звука для станции с неподдерживаемой функциональностью<br /><br />]]></description>
+                        <expectedResult><![CDATA[Запись звука не запустилась<br /><br />Пользователю выведено понятное сообщение о невозможности запуска на старой версии агента]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Раскрыть полную карточку персоны<br /><br />Проверить невозможность запуска из полной карточки]]></description>
+                        <expectedResult><![CDATA[Из полной карточки запись звука также не запустилась<br /><br />Пользователю вывелось понятное сообщение о невозможности запуска на старой версии агента]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-29 18:14:33 UTC</updatedOn>
+        </testCase>
+        <testCase id="21286" key="DOZOR-T5406">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-09-29 17:38:51 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на агенте старой версии(без лицензии endpoint-agent)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен агент, связан с персоной из Досье<br /><br />На dozor изменена лицензия без доступа к endpoint-agent, отсутствует модуль "Модуль контроля действий пользователей рабочих станции" (endpoint-agent)<br /><br />]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Убедиться, что лицензия изменена  и модуль endpoint-agent отсутствует]]></description>
+                        <expectedResult><![CDATA[В состоянии лицензии можно видеть, что модуль endpoint-agent отсутствует]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Открыть краткую карточку персоны с установленным ранее агентом и]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что без лицензии невозможно запустить запись звука на станции]]></description>
+                        <expectedResult><![CDATA[Запись звука недоступна без лицензии]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в полную карточку персоны и проверить отсутствие возможности запуска звука на станции]]></description>
+                        <expectedResult><![CDATA[Запись звука недоступна без лицензии аналогично краткой карточке]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Вернуть лицензию с модулем endpoint-agent<br /><br />Проверить возобновление возможности записи звука для рассматриваемой персоны<br /><br />Проверить краткую и полную карточки]]></description>
+                        <expectedResult><![CDATA[Возможность запускать запись звука после появление лицензии успешно возобновлена <br /><br />Запуск записи успешно производится как из краткой карточки, так и из полной]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-09-30 18:55:09 UTC</updatedOn>
+        </testCase>
+        <testCase id="21318" key="DOZOR-T5416">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-10-01 14:23:24 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Запуск и хранение]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Базовый механизм записи звука (мультидозор)]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[Загружена лицензия мультидозора( сервисы agent-server, software-center есть на общем ресурсе и на подкластере(минимум один подкластер))<br />На общие ресурсы и подкластер установлено по одной станции с агентом. Агенты связаны с персонами из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Выбрать персону связанную с агентом(станцией) из общих ресурсов(master)<br /><br />Перейти в маленькую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны/ запустилось окно с записью звука(в случае одной станции)<br /><br />После запуска\выбора открылось модальное окно "Запись звука" ( пока не рабочее ) и запустилась задача для агента]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[На ноде с ролью "сервер агентов" для общих ресурсов(master):<br />Проверить, что в агентской базе создалась задача на запись звука<br />psql -p 5434 -h localhost -U dozor<br />select task_id,agent_id,type,start_date,finish_date,status,result from ea_agent_task;<br /><br /><br />]]></description>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Проверить , что по истечении 3 минут задача завершилась]]></description>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в /data/storage/agent-media/год/месяц/день/час/минута и проверить, что запись после завершения задачи  сохранена]]></description>
+                        <expectedResult><![CDATA[по указанному пути находится архив .gz содержащий файл]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Перейти в большую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны/ запустилось окно с записью звука(в случае одной станции)]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[повторить шаги 2-4]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Выбрать персону связанную с агентом(станцией) на подкластере<br /><br />Перейти в маленькую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны/ запустилось окно с записью звука(в случае одной станции)<br /><br />После запуска\выбора открылось модальное окно "Запись звука" ( пока не рабочее ) и запустилась задача для агента]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[На ноде с ролью "сервер агентов" для подкластера:<br />Проверить, что в агентской базе создалась задача на запись звука<br />psql -p 5434 -h localhost -U dozor<br />select task_id,agent_id,type,start_date,finish_date,status,result from ea_agent_task;]]></description>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Проверить , что по истечении 3 минут задача завершилась]]></description>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[Перейти в /data/storage/agent-media/год/месяц/день/час/минута и проверить, что запись после завершения задачи  сохранена ]]></description>
+                        <expectedResult><![CDATA[по указанному пути находится архив .gz содержащий файл]]></expectedResult>
+                    </step>
+                    <step index="10">
+                        <customFields/>
+                        <description><![CDATA[Перейти в большую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Открылся выпадающий список содержащий все станции персоны/ запустилось окно с записью звука(в случае одной станции)]]></expectedResult>
+                    </step>
+                    <step index="11">
+                        <customFields/>
+                        <description><![CDATA[повторить шаги 8-11]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-10-01 14:31:18 UTC</updatedOn>
+        </testCase>
+        <testCase id="21406" key="DOZOR-T5418">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-10-04 15:10:57 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Раздел "запись звука"]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Раздел "запись звука" в большой карточке персоны]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[Персона у которой имеются записи звука]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в большую карточку персоны<br />в раздел "Запись звука" (слева в списке)]]></description>
+                        <expectedResult><![CDATA[Открывается список записей<br />Вверху страницы есть фильтр "Запись звука за период" содержащий календарь (копия из раздела "устройства")<br />По умолчанию фильтр показывает записи за "Все время"<br /><br />Список записей представлен в виде таблицы содержащей столбцы:<br />Дата и время начала<br />Дата и время окончания<br />Длительность<br />hostname/IP<br />Иконку скриншота<br />Иконку мп3 для скачивания<br />Иконку (корзина) для удаления<br /><br />Записи отсортированы по самым последним<br />Возможна сортировка по "дата и время начала" и "дата и время окончания"<br /><br />непонятное:<br />(Каждая запись содержит кнопку play и может быть проиграна из интерфейса<br />и остановлена кнопкой pause)<br /><br />(Если записей больше чем (что?) присутствует пагинация)<br /><br />]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4393" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 16:15:46 UTC</updatedOn>
+        </testCase>
+        <testCase id="21428" key="DOZOR-T5420">
+            <attachments/>
+            <component><![CDATA[Конфигурация]]></component>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-10-06 11:00:10 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Конфигурация]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Конфигурация. Параметр " Период тишины для приостановки записи "]]></name>
+            <objective><![CDATA[https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=78942250<br /><br />https://miro.com/app/board/o9J_kk1znxo=/?moveToWidget=3074457363350843433&amp;cot=14<br /><br />https://jira.solarsecurity.ru/browse/DOZOR-50767<br /><br />]]></objective>
+            <owner>JIRAUSER18917</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[UI:Перейти в Конфигурация/Расширенные настройки/Глобальные настройки Endpoint Agent  global-settings.json<br />и проверить наличие параметра:<br /><br />"Период тишины для приостановки записи  (сек)" mic-silence-waiting]]></description>
+                        <expectedResult><![CDATA[Параметр присутствует]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Для параметра "Период тишины для приостановки записи (сек)":<br />Проверить значение по умолчанию,<br />Затем ввести значение менее 10<br />и более 600]]></description>
+                        <expectedResult><![CDATA[Значение по умолчанию : 10 сек<br />Для указанного параметра минимальное значение = 10 сек , максимальное = 600 сек<br />При попытке ввода некорректных значений поле становится красным ипоявляется предупреждение с указанием диапазона допустимых значений]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Проверить наличие параметра в /data/repos/dozor/config-final.git/имя-ноды/smap-agents/global-settings.json]]></description>
+                        <expectedResult><![CDATA[Параметр присутствуют в виде<br />"ключ" : значение]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить наличие параметров<br /><br />MicSilenceWaiting<br />и его значение в<br />/data/spool/dozor/agent-server/agents/айди-агента/settings.xml]]></description>
+                        <expectedResult><![CDATA[Параметры присутствуют<br />Значение соответсвует выставленному в конфигурации]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Через UI изменить значения параметров на значения из допустимого диапазона и сохранить.<br />Проверить что в<br />/data/repos/dozor/config-final.git/имя-ноды/smap-agents/global-settings.json<br />и<br />/data/spool/dozor/agent-server/agents/айди-агента/settings.xml<br />изменились значения параметра]]></description>
+                        <expectedResult><![CDATA[Параметр изменен и сохранены<br />Параметр изменен в конфигурационных файлах]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 14:43:53 UTC</updatedOn>
+        </testCase>
+        <testCase id="21439" key="DOZOR-T5427">
+            <attachments/>
+            <component><![CDATA[Файловое хранилище]]></component>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-10-06 17:15:58 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ротация]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Ротация файлов. Удаление записей звука без архивации]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[По пути /data/storage создан том audio<br />в томе накоплены аудиозаписи за несколько дней ( год\месяц\день\час\минута )]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в "Настройки файлового хранилища config.xml" в пункт "настройки ротации"<br />Выбрать в пункте "настройки ротации"  - "Volume Group vg"  audio]]></description>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4376" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверить, что "Режим ротации mode" установлен в "Удалить, не архивировать"<br /><br />Изменить настройки:<br /><br />"Время жизни до ротации (д) lifedays"<br />"Периодичность ротации period"<br /><br />чтобы были ротированы записи из прошлых дней<br /><br />Например : если есть записи более чем за 7 дней, то выставить "время жизни до ротации" = 7<br />"периодичность ротации" = ежедневно + (текущее время + 5 минут), таким образом через 5 минут удалятся записи старше 7 дней<br /><br />Сохранить и применить]]></description>
+                        <expectedResult><![CDATA[настройки изменены и применены<br />в файле  /data/repos/dozor/config-final.git/имя ноды/filestorage-ng/config.xml настройки совпадают с интерфейсными]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Дождаться времени ротации и проверить, что записи подходящие под условия ротации не удалились]]></description>
+                        <expectedResult><![CDATA[в логах filestorage в указанное время не начались сообщения о ротации<br />/data/storage/audio записи не удалились]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в "настройки томов файлового хранилища volumes.xml"<br />Выбрать том audio и поставить для него галочку "разрешить ротацию тома enable-rotation"<br />Изменить "периодичность ротации" так, чтобы она произошла через несколько минут от изменения<br />Сохранить и применить]]></description>
+                        <expectedResult><![CDATA[без этой галочки ротация тома производиться не будет]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Дождаться ротации и проверить , что записи подходящие под условия ротации удалились]]></description>
+                        <expectedResult><![CDATA[в логах filestorage в указанное время начались сообщения о ротации и после ее окончания в /data/storage/audio записи  удалились]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 16:40:05 UTC</updatedOn>
+        </testCase>
+        <testCase id="21440" key="DOZOR-T5428">
+            <attachments/>
+            <component><![CDATA[Файловое хранилище]]></component>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-10-06 18:46:38 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ротация]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Ротация файлов. Удаление записей звука с локальной архивацией]]></name>
+            <owner>JIRAUSER18917</owner>
+            <precondition><![CDATA[По пути /data/storage создан том audio<br />в томе накоплены аудиозаписи за несколько дней ( год\месяц\день\час\минута )]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в "Настройки файлового хранилища config.xml" в пункт "настройки ротации"<br />Выбрать в пункте "настройки ротации"  - "Volume Group vg"  audio]]></description>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/4376" style="width:567px" class="fr-fic fr-fil fr-dib" />]]></testData>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Установить "Режим ротации mode" в "Локальная файловая система" и казать путь по которому на машине будет сохранен архив<br /><br />Изменить настройки:<br /><br />"Время жизни до ротации (д) lifedays"<br />"Периодичность ротации period"<br /><br />чтобы были ротированы записи из прошлых дней<br /><br />Например : если есть записи более чем за 7 дней, то выставить "время жизни до ротации" = 7<br />"периодичность ротации" = ежедневно + (текущее время + 5 минут), таким образом через 5 минут удалятся записи старше 7 дней<br /><br />Сохранить и применить]]></description>
+                        <expectedResult><![CDATA[настройки изменены и применены<br />в файле  /data/repos/dozor/config-final.git/имя ноды/filestorage-ng/config.xml настройки совпадают с интерфейсными]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Дождаться времени ротации и проверить, что записи подходящие под условия ротации не удалились]]></description>
+                        <expectedResult><![CDATA[в логах filestorage в указанное время не начались сообщения о ротации<br />/data/storage/audio записи не удалились]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в "настройки томов файлового хранилища volumes.xml"<br />Выбрать том audio и поставить для него галочку "разрешить ротацию тома enable-rotation"<br />Изменить "периодичность ротации" так, чтобы она произошла через несколько минут от изменения<br />Сохранить и применить]]></description>
+                        <expectedResult><![CDATA[без этой галочки ротация тома производиться не будет]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Дождаться ротации и проверить , что записи подходящие под условия ротации удалились]]></description>
+                        <expectedResult><![CDATA[в логах filestorage в указанное время начались сообщения о ротации и после ее окончания в /data/storage/audio записи  удалились<br />По окончанию ротации в указанной директории создался архив вида :<br />vm1020130247.solar.local-agent-media-2021.09.30-1633535710200-part0.tar]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 16:40:48 UTC</updatedOn>
+        </testCase>
+        <testCase id="21441" key="DOZOR-T5429">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-10-07 10:45:02 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ошибки(Исключения)]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука на агенте(прерывание и повторный запуск)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен агент, в группе станций выбраны полнофункциональные настройки , агент связан с персоной из Досье]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Review]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Осуществить поиск и переход на карточку персоны с установленным агентом<br /><br />Открыть краткую карточку персоны]]></description>
+                        <expectedResult><![CDATA[Краткая карточка персоны успешно открыта]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Запустить запись звука для этой персоны\станции<br /><br />Проверить, что задача на запись звука успешно стартовала]]></description>
+                        <expectedResult><![CDATA[Задача успешно стартовала для данной станции\персоны]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Не дожидаясь полноценного запуска записи по агенту прервать\остановить текущую задачу]]></description>
+                        <expectedResult><![CDATA[Задача успешно остановлена]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[После прерывания повторно запустить задачу на текущей станции<br />Проверить, что внезапная остановка не влияет на повторные запуски и новые задачи повторно успешно запускаются]]></description>
+                        <expectedResult><![CDATA[Задачи успешно запускаются повторно после прерывания]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Повторить повторный запуск и прерывания из полной карточки персоны]]></description>
+                        <expectedResult><![CDATA[Запись звука повторно запускается после прерываний успешно из полной карточки персоны (аналогично как из краткой)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-10-07 10:51:46 UTC</updatedOn>
+        </testCase>
+        <testCase id="21442" key="DOZOR-T5430">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Гришин Владислав Геннадиевич</createdBy>
+            <createdOn>2021-10-07 10:52:16 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Запуск и хранение]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Запуск записи звука для персоны не из Досье(Ручное создание персоны)]]></name>
+            <owner>v.grishin</owner>
+            <precondition><![CDATA[Установлен полнофункциональный агент, агент связан с персоной созданной вручную(не из Досье)]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Перейти в маленькую карточку персоны(созданной вручную) и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Запустилась задача на запись звука по единственной привязанной станции без ошибок<br /><br />]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[На ноде с ролью "сервер агентов":<br />Проверить, что в агентской базе создалась задача на запись звука<br />psql -p 5434 -h localhost -U dozor<br />select task_id,agent_id,type,start_date,finish_date,status,result from ea_agent_task;]]></description>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[После завершения задачи(время записи настроено в конфигурации) перейти в /data/storage/agent-media/год/месяц/день/час/минута и проверить, что запись после завершения задачи  сохранена]]></description>
+                        <expectedResult><![CDATA[по указанному пути находится архив .gz содержащий файл]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Перейти в большую карточку персоны и нажать кнопку "запись звука"]]></description>
+                        <expectedResult><![CDATA[Запустилась задача на запись звука по единственной привязанной станции без ошибок]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Повторить шаги 2-3 для запуска из полной карточки]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Гришин Владислав Геннадиевич</updatedBy>
+            <updatedOn>2021-10-08 14:42:05 UTC</updatedOn>
+        </testCase>
+        <testCase id="21505" key="DOZOR-T5437">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Мустафин Ильяс Галимзянович</createdBy>
+            <createdOn>2021-10-11 16:41:55 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Запись звука/Ротация]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Ротация мета-данных. Удаление мета-данных по истечении периода ротации]]></name>
+            <owner>JIRAUSER18917</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[]]></description>
+                        <expectedResult><![CDATA[]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Мустафин Ильяс Галимзянович</updatedBy>
+            <updatedOn>2021-10-11 17:55:46 UTC</updatedOn>
+        </testCase>
+    </testCases>
+</project>

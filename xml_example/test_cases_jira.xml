@@ -1,0 +1,2372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project>
+    <projectId>10702</projectId>
+    <projectKey>DOZOR</projectKey>
+    <modelVersion>1.0</modelVersion>
+    <jiraVersion>8.4.1</jiraVersion>
+    <exportDate>2021-10-19 07:36:22 UTC</exportDate>
+    <folders>
+        <folder fullPath="Контроль Рабочего Времени" index="1"/>
+        <folder fullPath="Контроль Рабочего Времени/Досье" index="1"/>
+        <folder fullPath="Контроль Рабочего Времени/Досье/КРВ в группе персон" index="0"/>
+        <folder fullPath="Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки" index="0"/>
+        <folder fullPath="Контроль Рабочего Времени/Укладка данных от агентов" index="0"/>
+        <folder fullPath="Контроль Рабочего Времени/права доступа" index="2"/>
+    </folders>
+    <testCases>
+        <testCase id="8807" key="DOZOR-T3561">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Узунян Денис</createdBy>
+            <createdOn>2020-04-25 17:25:37 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Укладка данных от агентов]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[SR: укладка данных в кликхауз пачками]]></name>
+            <objective><![CDATA[DOZOR-41414]]></objective>
+            <owner>duzunyan@jet.msk.su</owner>
+            <precondition><![CDATA[можно однонодный дозор. <br/>выставить роль сервер агента. НЕ выставлять роль UBA и Контроль рабочего времени (в 7.2 и выше)<br/><br/>]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Добавить станцию и установить агента. <br/>в настройках агента не выставлять чекбокс "контроль рабочего времени"]]></description>
+                        <expectedResult><![CDATA[получен работающий агент .<br/>параметры , например :<br/>      "x-agent-client-id: 98ee6fa4-cadf-4edd-abd7-96831274cfa0" <br/> "x-agent-src-address: 10.201.28.213" <br/> "x-agent-user-login: User" <br/> "x-agent-hostname: 10.201.28.213" <br/>      "x-agent-user-sid: S-1-5-21-2652311848-583692439-2486967358-1008" ]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[послать curl &nbsp;на &nbsp;сервер агентов : <br/><br/>]]></description>
+                        <expectedResult><![CDATA[в папке <strong>/data/spool/dozor/agent-server/time-control/</strong><br/>появятся подпапки вида :<br/>441062/2646376/<br/>в итоге будет edn файл вида <strong>98ee6fa4-cadf-4edd-abd7-96831274cfa0-2020-04-25-14-41-07-123.edn ,</strong> содержащий <strong>60&nbsp;</strong>тестовых строк<br/><br/><br/>проверить лог agent-server : seelog agent-server | grep '&lt;time-control&gt;'..<br/>появится запись вида :<br/><strong>debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; read files...<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 1 of 1<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; add Abook info...<br/>debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; store 60 rows to Clickhouse...</strong><br/><br/><br/><br/><br/><br/><br/>]]></expectedResult>
+                        <testData><![CDATA[для 7.1:<br/>curl -i \<br/>-H "Accept: application/json" \<br/>-H "Content-Type: application/json" \<br/>-H "x-agent-protocol: Agent.Activity" \<br/>-H "x-agent-client-id: 98ee6fa4-cadf-4edd-abd7-96831274cfa0" \<br/>-H "x-agent-src-address: 10.201.28.213" \<br/>-H "x-agent-user-login: User" \<br/>-H "x-agent-hostname: 10.201.28.213" \<br/>-H "x-agent-user-sid: S-1-5-21-2652311848-583692439-2486967358-1008" \<br/>-d '{"log": [<br/>{"date":"2020-04-20T00:00:00Z","type":"process","name":"GitHub","title":"Dozor Core","duration":60},<br/>{"date":"2020-04-20T00:01:00Z","type":"process","name":"Winword","title":"Отчет за апрель 2018 год","duration":60},<br/>{"date":"2020-04-20T00:02:00Z","type":"process","name":"skype","title":"QA_DOZOR","duration":60},<br/>{"date":"2020-04-20T00:03:00Z","type":"process","name":"chrome","title":"title Chrome1","duration":60},<br/>{"date":"2020-04-20T00:04:00Z","type":"process","name":"chromedriver","title":"title Chrome2","duration":60},<br/>{"date":"2020-04-20T00:05:00Z","type":"process","name":"new_chrome","title":"title Chrome3","duration":60},<br/>{"date":"2020-04-20T00:06:00Z","type":"process","name":"iexplore","title":"ЯндексХреновости: 31 июля Путин поручил Министерству обороны помочь в тушении пожаров на территории Сибири и Дальнего Востока. Площадь лесных пожаров в России составляет почти 3 млн гектаров. Наиболее сложная обстановка сложилась в Иркутской области, Красноярском крае, Якутии ","duration":60},<br/>{"date":"2020-04-20T00:07:00Z","type":"process","name":"aapp","title":"brr","duration":60},<br/>{"date":"2020-04-20T00:08:00Z","type":"process","name":"photoshop","title":"RAW1488","duration":60},<br/>{"date":"2020-04-20T00:09:00Z","type":"process","name":"adobehelper","title":"Login","duration":60},<br/>{"date":"2020-04-20T00:10:00Z","type":"process","name":"adobehelper","title":"Login","duration":60},<br/>{"date":"2020-04-20T00:11:00Z","type":"process","name":"Winword","title":"Отчет","duration":60},<br/>{"date":"2020-04-20T00:12:00Z","type":"process","name":"gapp","title":"Zaq","duration":60},<br/>{"date":"2020-04-20T00:13:00Z","type":"process","name":"opera","title":"OperaSoftware","duration":60},<br/>{"date":"2020-04-20T00:14:00Z","type":"process","name":"uTorrent","title":"UuTorrent 3.55.16.7","duration":60},<br/>{"date":"2020-04-20T00:15:00Z","type":"process","name":"7zFM","title":"Keylogger","duration":60},<br/>{"date":"2020-04-20T00:16:00Z","type":"process","name":"yapp","title":"yap","duration":60},<br/>{"date":"2020-04-20T00:17:00Z","type":"process","name":"icq","title":"ICQ12345678","duration":60},<br/>{"date":"2020-04-20T00:18:00Z","type":"process","name":"vlc","title":"Во все тяжкие","duration":60},<br/>{"date":"2020-04-20T00:19:00Z","type":"process","name":"TestProcesTestProcesTestProcesTestProcesTestProTes","title":"31 июля Путин поручил Министерству обороны помочь в тушении пожаров на территории Сибири и Дальнего Востока. Площадь лесных пожаров в России составляет почти 3 млн гектаров. Наиболее сложная обстановка сложилась в Иркутской области, Красноярском крае, Якутии","duration":60},<br/>{"date":"2020-04-20T00:20:00Z","type":"process","name":"avp","title":"ALERT !!! &lt;script&gt;ahtung!&lt;/script&gt;","duration":60},<br/>{"date":"2020-04-20T00:21:00Z","type":"process","name":"Snagit","title":"31.07.2019-20:30:56.JPG","duration":60},<br/>{"date":"2020-04-20T00:22:00Z","type":"process","name":"unknown","title":"unknown","duration":60},<br/>{"date":"2020-04-20T00:23:00Z","type":"process","name":"opera","title":"Rutracker","duration":60},<br/>{"date":"2020-04-20T00:24:00Z","type":"process","name":"zaqwsx","title":"zxcvbnm,,,,,","duration":60},<br/>{"date":"2020-04-20T00:25:00Z","type":"process","name":"Itunes","title":"AppleID","duration":60},<br/>{"date":"2020-04-20T00:26:00Z","type":"process","name":"GitHub","title":"Dozor Core","duration":60},<br/>{"date":"2020-04-20T00:27:00Z","type":"process","name":"Winword","title":"Отчет за апрель 2018 год","duration":60},<br/>{"date":"2020-04-20T00:28:00Z","type":"process","name":"skype","title":"QA_DOZOR","duration":60},<br/>{"date":"2020-04-20T00:29:00Z","type":"process","name":"chrome","title":"title Chrome4","duration":60},<br/>{"date":"2020-04-20T00:30:00Z","type":"process","name":"chromedriver","title":"title Chrome5","duration":60},<br/>{"date":"2020-04-20T00:31:00Z","type":"process","name":"new_chrome","title":"title Chrome6","duration":60},<br/>{"date":"2020-04-20T00:32:00Z","type":"process","name":"iexplore","title":"ЯндексХреновости: 31 июля Путин поручил Министерству обороны помочь в тушении пожаров на территории Сибири и Дальнего Востока. Площадь лесных пожаров в России составляет почти 3 млн гектаров. Наиболее сложная обстановка сложилась в Иркутской области, Красноярском крае, Якутии ","duration":60},<br/>{"date":"2020-04-20T00:33:00Z","type":"process","name":"aapp","title":"brr","duration":60},<br/>{"date":"2020-04-20T00:34:00Z","type":"process","name":"photoshop","title":"RAW1489","duration":60},<br/>{"date":"2020-04-20T00:35:00Z","type":"process","name":"adobehelper","title":"Login","duration":60},<br/>{"date":"2020-04-20T00:36:00Z","type":"process","name":"adobehelper","title":"Login","duration":60},<br/>{"date":"2020-04-20T00:37:00Z","type":"process","name":"Winword","title":"Отчет","duration":60},<br/>{"date":"2020-04-20T00:38:00Z","type":"process","name":"gapp","title":"Zaq","duration":60},<br/>{"date":"2020-04-20T00:39:00Z","type":"process","name":"opera","title":"OperaSoftware","duration":60},<br/>{"date":"2020-04-20T00:40:00Z","type":"process","name":"uTorrent","title":"UuTorrent 3.55.16.8","duration":60},<br/>{"date":"2020-04-20T00:41:00Z","type":"process","name":"7zFM","title":"Keylogger","duration":60},<br/>{"date":"2020-04-20T00:42:00Z","type":"process","name":"yapp","title":"yap","duration":60},<br/>{"date":"2020-04-20T00:43:00Z","type":"process","name":"icq","title":"ICQ12345679","duration":60},<br/>{"date":"2020-04-20T00:44:00Z","type":"process","name":"vlc","title":"Во все тяжкие","duration":60},<br/>{"date":"2020-04-20T00:45:00Z","type":"process","name":"TestProcesTestProcesTestProcesTestProcesTestProTes","title":"32 июля Путин поручил Министерству обороны помочь в тушении пожаров на территории Сибири и Дальнего Востока. Площадь лесных пожаров в России составляет почти 3 млн гектаров. Наиболее сложная обстановка сложилась в Иркутской области, Красноярском крае, Яку󺀋","duration":60},<br/>{"date":"2020-04-20T00:46:00Z","type":"process","name":"avp","title":"ALERT !!! &lt;script&gt;ahtung!&lt;/script&gt;","duration":60},<br/>{"date":"2020-04-20T00:47:00Z","type":"process","name":"Snagit","title":"31.07.2019-20:30:56.JPG","duration":60},<br/>{"date":"2020-04-20T00:48:00Z","type":"process","name":"unknown","title":"unknown","duration":60},<br/>{"date":"2020-04-20T00:49:00Z","type":"process","name":"opera","title":"Rutracker","duration":60},<br/>{"date":"2020-04-20T00:50:00Z","type":"process","name":"zaqwsx","title":"zxcvbnm,,,,,","duration":60},<br/>{"date":"2020-04-20T00:51:00Z","type":"process","name":"Itunes","title":"AppleID","duration":60},<br/>{"date":"2020-04-20T00:52:00Z","type":"process","name":"GitHub","title":"Dozor Core","duration":60},<br/>{"date":"2020-04-20T00:53:00Z","type":"process","name":"Winword","title":"Отчет за апрель 2018 год","duration":60},<br/>{"date":"2020-04-20T00:54:00Z","type":"process","name":"skype","title":"QA_DOZOR","duration":60},<br/>{"date":"2020-04-20T00:55:00Z","type":"process","name":"chrome","title":"title Chrome7","duration":60},<br/>{"date":"2020-04-20T00:56:00Z","type":"process","name":"chromedriver","title":"title Chrome8","duration":60},<br/>{"date":"2020-04-20T00:57:00Z","type":"process","name":"new_chrome","title":"title Chrome9","duration":60},<br/>{"date":"2020-04-20T00:58:00Z","type":"process","name":"iexplore","title":"ЯндексХреновости: 31 июля Путин поручил Министерству обороны помочь в тушении пожаров на территории Сибири и Дальнего Востока. Площадь лесных пожаров в России составляет почти 3 млн гектаров. Наиболее сложная обстановка сложилась в Иркутской области, Красноярском крае, Якутии ","duration":60},<br/>{"date":"2020-04-20T00:59:00Z","type":"process","name":"aapp","title":"brr","duration":60}<br/>]<br/>}' \<br/>     -X POST https://10.199.29.138:4444/agents/98ee6fa4-cadf-4edd-abd7-96831274cfa0/data --insecure]]></testData>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[повторить отправку данных курлом (можно завернуть в цикл и&nbsp; отправлять скриптом)]]></description>
+                        <expectedResult><![CDATA[проверить лог agent-server : seelog agent-server | grep '&lt;time-control&gt;'..<br/>убедиться, что количество файлов и строк отправляемых в клик растет :<br/><br/>debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; read files...<br/>debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 20 of 20<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; add Abook info...<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; store 1200 rows to Clickhouse...<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; read files...<br/> debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 24 of 24<br/>debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; add Abook info...<br/><br/><br/><br/>]]></expectedResult>
+                        <testData><![CDATA[while true;<br/>do<br/><strong>curl ......</strong><br/>sleep 5;<br/>done]]></testData>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить , что закладка данных в кликхауз производится каждые <strong>22 секунды </strong>]]></description>
+                        <expectedResult><![CDATA[2020-04-25 17:52:55.853952500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 60 of 60<br/>2020-04-25 17:52:55.854675500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; add Abook info...<br/>2020-04-25 17:52:57.111670500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; store 3600 rows to Clickhouse...<br/>2020-04-25 17:53:17.323173500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; read files...<br/>2020-04-25 17:53:17.817999500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 64 of 64<br/><br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить , что с ростом количество файлов (и соответствеено строк) , количество строк , отправляемых в клик за один подход равно <strong>20040 rows и не превышает этого значения&nbsp;</strong><br/><br/><br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[2020-04-25 18:01:37.300732500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; spool files 334 of 363<br/>2020-04-25 18:01:37.300900500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; add Abook info...<br/>2020-04-25 18:01:43.594234500 debug (3044) &lt;clojure-agent-send-off-pool-0&gt; &lt;time-control&gt; store 20040 rows to Clickhouse...]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[дождаться когда &nbsp;файлов edn будет не менее 10 000 . &nbsp;(в тестовых строках это 10 000 * 60 = 600 000 строк)<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[проверить, что структура каталогов в /data/spool/dozor/agent-server/time-control/ :<br/>/441062<ul style="list-style-type: circle;"><li>/2646376</li></ul>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.edn<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .edn<ul><li>/2646377</li></ul>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.edn<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.edn<br/>/441063<ul><li>/2646376</li></ul>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.edn<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .edn<ul><li>/2646377</li></ul>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.edn<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .<br/>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .edn<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[включить роль UBA (для 7.1) или"Контроль рабочего времени" (для 7.2 и выше)]]></description>
+                        <expectedResult><![CDATA[продолжить наблюдение за логом &nbsp;agent-server :<br/>seelog agent-server | grep '&lt;time-control&gt;'.<br/><br/>убедиться, что после выставления роли (появился сам кликхауз) данные стали так же построчно передаваться в кликхауз ( <strong>по 20040 строк</strong>) и соответственно удаляться из спула.<br/><br/>засечь время закладки 600 строк.&nbsp;]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Узунян Денис</updatedBy>
+            <updatedOn>2020-04-27 08:54:30 UTC</updatedOn>
+        </testCase>
+        <testCase id="8810" key="DOZOR-T3562">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 09:09:29 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Есть доступ к разделу "КРВ", Досье = полный доступ]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>сохранить.<br/><br/>создать нового пользователя qa , выдать ему тестувую роль КРВ]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему. <br/><br/>]]></description>
+                        <expectedResult><![CDATA[открывается Рабочий стол КРВ]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[На Рабочем столе КРВ проверить выпадающий список групп, доступных для выбора]]></description>
+                        <expectedResult><![CDATA[для выбора доступны все группы Досье <br/>- ОШС<br/>-Гроки <br/>- ручные]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить доступность виджетов Рабочего стола КРВ]]></description>
+                        <expectedResult><![CDATA[на виджетах есть данные , &nbsp;фильтры работают]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить переходы с рабстола в Досье]]></description>
+                        <expectedResult><![CDATA[переходы работают , группы досье открываются на вкладках КРВ&nbsp; без ошибок]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Зайти в Досье , перейти в тестовую Группу Досье (с данными для КРВ)<br/>перейти на вкладку "Контроль рабочего времени"]]></description>
+                        <expectedResult><![CDATA[открывается КРВ для группы досье<br/>на виджетах есть данные ,  фильтры работают<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку персоны из тестовой группы. <br/>перейти на вкладку "Контроль рабочего времени"]]></description>
+                        <expectedResult><![CDATA[открывается КРВ для&nbsp; персоны<br/>на виджетах есть данные , фильтры работают<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-07 13:43:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="8811" key="DOZOR-T3563">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 09:40:50 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Нет доступа к разделу "КРВ", Досье полный доступ]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/><strong>не отмечать</strong> чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>отметить чекбоксом оба рабочих стола - и администратора и руководителя.<br/>сохранить.]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестувую роль КРВ]]></description>
+                        <expectedResult><![CDATA[убедиться, что в карточке пользователя нет поля "доступны только группы"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему. <br/><br/>]]></description>
+                        <expectedResult><![CDATA[Сразу открывается Рабочий стол администратора.]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить переключатель рабочих столов]]></description>
+                        <expectedResult><![CDATA[есть значения <br/>- рабочий стол администратора<br/>- рабочий стол руководителя<br/>нет значения <br/>-рабочий стол КРВ]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[в Досье перейти в тестовую Группу Досье (с данными для КРВ)]]></description>
+                        <expectedResult><![CDATA[в группе Досье нет вкладки "Контроль Рабочего времени" (или не активна)<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку персоны из тестовой группы.]]></description>
+                        <expectedResult><![CDATA[в карточке персоны нет вкладки "Контроль Рабочего времени" (или не активна)<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-07 11:15:33 UTC</updatedOn>
+        </testCase>
+        <testCase id="8812" key="DOZOR-T3564">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 09:45:47 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Нет доступа к разделу "КРВ" (прямые ссылки)]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени<br/><br/>зайти пользователем superadmin и сохранить ссылки<br/>1. для рабочего стола КРВ<br/>2. Для вкладки "КРВ" в группе персон <br/>3.Для вкладки КВР в карточке персоны]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/><strong>&nbsp;не отмечать</strong> чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>сохранить.<br/><br/>создать нового пользователя qa , выдать ему тестувую роль КРВ]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему.]]></description>
+                        <expectedResult><![CDATA[Сразу открывается Досье. ]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[перейти по сохраненным прямым ссылкам на<br/>1. рабстол крв<br/>2. вкладку крв в группе персоны<br/>3. вкладку крв в карточке персоны]]></description>
+                        <expectedResult><![CDATA[проверить , что нет доступа по ссылкам<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Нуртдинов Тимур Маратович</updatedBy>
+            <updatedOn>2021-03-30 16:02:29 UTC</updatedOn>
+        </testCase>
+        <testCase id="8814" key="DOZOR-T3566">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 10:35:23 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41919</key>
+                    <summary><![CDATA[КРВ. Досье. Ограничение данных КРВ по группам досье]]></summary>
+                </issue>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[КРВ , Досье: Доступ ограничен ОШС, доступны не все группы]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени<br/><br/>засинхронизовано АД,<br/>поставить несколько групп ОШС на особый контроль.<br/>создать несколько разделов и групп. Добавить в эти группы созданные вручную персоны , созданные автоматически персоны, персоны из ОШС]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье как <strong>"Доступ ограничен группами организационной структуры"</strong><br/>сохранить.<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестовую роль КРВ<br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что после выставления тестовой роли КРВ , появляется пустое поле "доступны только группы персон"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[поставить курсор в поле "Доступны только группы персон"]]></description>
+                        <expectedResult><![CDATA[появляется выпадающий список групп Досье <br/>(тут не делается ограничений на ОШС , так как у админа , который настраивает нет таких ограничений - решение дизайна)]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить поиск по списку персон]]></description>
+                        <expectedResult><![CDATA[поиск корректно работает]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выставить несколько групп с данными по КРВ в поле "доступны только группы" и сохранить]]></description>
+                        <expectedResult><![CDATA[сохранение без ошибок]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем в систему.<br/>Открыть рабочий стол КРВ.<br/>Ввыпадающем списке выбора групп найти доступные группы с данными по КРВ и недоступные группы с данными по КРВ.<br/>Выбрать их]]></description>
+                        <expectedResult><![CDATA[В выпадающем списке выбора групп отображаются все группы , вне зависимости от того, какие доступны , а какие нет.]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Проверить рабочий стол КРВ]]></description>
+                        <expectedResult><![CDATA[На рабочем столе КРВ выведены &nbsp;только доступные группы , вне зависимости от выбора в выпадашке. <br/>Данных по запрещенным группам нет.]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[Перейти в карточку разрешенной группы в Досье. на вкладку КРВ.]]></description>
+                        <expectedResult><![CDATA[Проверить, что все данные присутствуют, фильтры работают. <br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку персоны разрешенной группы.&nbsp;]]></description>
+                        <expectedResult><![CDATA[Открывается только краткая карточка. <br/>Переход в полную - отсуствует.]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[Перейти в карточку запрещенной группы в Досье. на вкладку КРВ.]]></description>
+                        <expectedResult><![CDATA[Проверить, что все данные нулевые]]></expectedResult>
+                    </step>
+                    <step index="10">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку персоны запрещенной группы.&nbsp;]]></description>
+                        <expectedResult><![CDATA[Открывается только краткая карточка. <br/>Переход в полную - отсуствует.]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-08 09:26:17 UTC</updatedOn>
+        </testCase>
+        <testCase id="8815" key="DOZOR-T3567">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 10:46:56 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Есть Доступ к КРВ , Нет доступа к Досье]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье как <strong>"полный"</strong><br/>сохранить.<br/><br/>создать нового пользователя qa , выдать ему тестувую роль КРВ]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему.<br/>на рабочем столе выбрать несколько групп с Данными по КРВ<br/><br/>]]></description>
+                        <expectedResult><![CDATA[отображается статистика по выбранным группам]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Изменить Доступ к Досье на "нет доступа". <br/>снова зайти тестовым пользователем]]></description>
+                        <expectedResult><![CDATA[Открывается рабочий стол с данными предыдущего шага<br/>Но перейти в карточку группы нельзя , выбрать другие группы - нельзя.&nbsp;]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить, что нет меню Досье]]></description>
+                        <expectedResult><![CDATA[Досье недоступно<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выполнить поиск персоны.]]></description>
+                        <expectedResult><![CDATA[поиска нет.&nbsp;<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[повторить кейс , но на втором шаге не выбирать никакие группы<br/>тогда на 3м шаге Рабочий стол должен быть пустым , но с текстом "выберите группы".<br/>Выбрать при этом ничего не дает.]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-14 16:23:20 UTC</updatedOn>
+        </testCase>
+        <testCase id="8821" key="DOZOR-T3568">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 12:31:52 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41919</key>
+                    <summary><![CDATA[КРВ. Досье. Ограничение данных КРВ по группам досье]]></summary>
+                </issue>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[КРВ , Досье: Доступ ограничен ОШС]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени<br/><br/>засинхронизовано АД, <br/>поставить несколько групп ОШС на особый контроль. <br/>создать несколько разделов и групп. Добавить в эти группы созданные вручную персоны , созданные автоматически персоны, персоны из ОШС]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье как <strong>"Доступ ограничен группами организационной структуры"</strong><br/>сохранить.<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестовую роль КРВ]]></description>
+                        <expectedResult><![CDATA[Убедиться, что после выставления тестовой роли КРВ , появляется пустое поле "доступны только группы персон"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему. <br/><br/>]]></description>
+                        <expectedResult><![CDATA[открывается Рабочий стол КВР]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить выпадашку для рабочего стола КРВ]]></description>
+                        <expectedResult><![CDATA[в списке групп только ГРОКи]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить доступность виджетов Рабочего стола КРВ]]></description>
+                        <expectedResult><![CDATA[на виджетах есть данные только по группам ОШС, &nbsp;фильтры работают также только по группам ОШС и персонам в этих группах]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[проверить&nbsp; переходы с Рабочего стола на Группы персон и на персоны]]></description>
+                        <expectedResult><![CDATA[убедиться, что переходы на группы персон работают. <br/><br/>убедиться, что при переходе на карточку персоны , открывается краткая карточка, перехода в полную нет]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[проверить, что есть меню Досье<br/>перейти в Досье]]></description>
+                        <expectedResult><![CDATA[проверить, что открывается дерево Досье , но в нем только Группы ОШС<br/><br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[открыть тестовую группу ОШС (с данными по КРВ)<br/>перейти на вкладку&nbsp; КРВ]]></description>
+                        <expectedResult><![CDATA[на вкладке есть данные , фильтры работают<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[открыть карточку персоны тестовой группе ОШС]]></description>
+                        <expectedResult><![CDATA[открывается краткая карточка персоны<br/>нет перехода в полную карточку]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[проверить , что работает поиск групп в Досье и системный поиск персон]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-10 16:25:42 UTC</updatedOn>
+        </testCase>
+        <testCase id="8837" key="DOZOR-T3576">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 16:58:53 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[предустановленные роли: доступ к разделу "КРВ"]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[проверить предустановленную роль superadmin <br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[Доступ к КРВ = включено<br/>Доступ к Досье - как и раньше было (отсутствует)]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить предустановленную роль<table><tbody><tr><td>Системный администратор</td></tr></tbody></table><br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[Доступ к КРВ = выключено<br/>Доступ к Досье - как и раньше было (отсутствует)]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить предустановленную роль<table><tbody><tr><td>Администратор безопасности <br/></td></tr></tbody></table><br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[Доступ к КРВ = включено<br/>Доступ к Досье - как и раньше было (разрешено)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-10 09:40:00 UTC</updatedOn>
+        </testCase>
+        <testCase id="8839" key="DOZOR-T3577">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-27 17:01:07 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[экспорт \ импорт роли с новыми правами]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[2 стенда с лицензией UBA и данными для Контроля Рабочего времени<br/><br/>]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Draft]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>сохранить.<br/><br/>создать нового пользователя qa , выдать ему тестувую роль КРВ ]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ-ОШС"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (ОШС)<br/>сохранить.<br/><br/>создать нового пользователя qa2 , выдать ему тестувую роль "КРВ-ОШС" и ограничить доступ только группой Досье (одну берем из АД , одну берем из ГрОКов, Одну- рукосозданную)]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ-нет"<br/>НЕ отмечать чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (ОШС)<br/>сохранить.<br/><br/>создать нового пользователя qa3 , выдать ему тестувую роль "КРВ-нет" и ограничить доступ только группой Досье (одну берем из АД , одну берем из ГрОКов, Одну- рукосозданную)]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[выполнить экспорт ролей]]></description>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[удалить роли с КРВ. <br/>заимпортировать на этот же стенд&nbsp;]]></description>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[выполнить импорт на чистый стенд]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[удал]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-11 08:56:44 UTC</updatedOn>
+        </testCase>
+        <testCase id="8891" key="DOZOR-T3584">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 08:13:03 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Внешний вид виджетов]]></name>
+            <objective><![CDATA[<a href="https://www.figma.com/file/Ceg9Bz0Ml5Y7kblyiIWASM/DOZOR?node-id=1396%3A513">https://www.figma.com/file/Ceg9Bz0Ml5Y7kblyiIWASM/DOZOR?node-id=1396%3A513</a><br/><img src="../rest/tests/1.0/attachment/image/1678" style="width: 300px;" class="fr-fil fr-dib"><img src="../rest/tests/1.0/attachment/image/1680" style="width: 300px;" class="fr-fil fr-dib">&nbsp;]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Зайти в тестовую группу персон (с данными по КРВ)]]></description>
+                        <expectedResult><![CDATA[отображается вкладка с виджетами]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[фильтр выбора периода времени]]></description>
+                        <expectedResult><![CDATA[выставлен на текущую неделю <strong><em><span style="color: rgb(184, 49, 47);">(полная неделя или от сегодня и на неделю назад ?)</span></em></strong><br/>имеются стрелки влево\вправо <strong><em><span style="color: rgb(226, 80, 65);">(при отсутствии вправо диапазона , стрелка не активна?)</span></em></strong><br/>периоды пролистываются неделями]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1681" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Виджет "среднее начало и окончание дня"&nbsp;]]></description>
+                        <expectedResult><![CDATA[<ul><li>Среднее начало дня за период и среднее окончание дня всех сотрудников группы. <em>(От первой активности до окончания последней активности)</em></li><li>Формат времени 00:00—00:00</li><li>Время ранней активности за неделю</li><li>Разница ранней активности за предыдущую неделю с текущим временем.</li><li>Время последней активности</li><li>Разница поздней активности с текущим временем.</li><li>Аналогично для окончания активности.</li></ul>]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1682" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Виджет "средний рабочий день"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Среднее рабочее время всех сотрудников группы&nbsp;<em>(за неделю)</em></li><li>Разница с предыдущей неделей</li><li>Время выводим в формате 0 ч 0 мин (секунды округляем)</li><li>График по дням среднего рабочего времени.</li><li>При наведении на столбец отображаем дату и среднее рабочее время в этот день.</li><li>Линейный график среднего рабочего времени.</li></ul><br/>]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1683" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Виджет "среднее активное время"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Среднее активное время&nbsp;всех сотрудников группы&nbsp;<em>(за выбранную неделю)</em></li><li>Разница с предыдущим периодом (прошлая неделя)</li><li>Время выводим в формате 0 ч 0 мин (секунды округляем)</li><li>График по дням активного времени. (Количество столбцов равно дням недели)</li><li>При наведении на столбец отображаем дату и среднее активное время в этот день.</li><li>Линейный график среднего активного времени.</li></ul><br/>]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1684" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Виджет "среднее неактивное время"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Среднее неактивное время&nbsp;всех сотрудников группы&nbsp;<em>(за неделю)</em></li><li>Разница с предыдущим периодом&nbsp;<em>(прошлая неделя)</em></li><li>Время выводим в формате 0 ч 0 мин&nbsp;<em>(секунды округляем)</em></li><li>График по дням неактивного времени.&nbsp;<em>(Количество столбцов равно дням недели)</em></li><li>При наведении на столбец отображаем дату и среднее неактивное время в этот день.</li><li>Линейный график среднего неактивного времени.</li></ul><br/>]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1685" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Таблица "персоны"]]></description>
+                        <expectedResult><![CDATA[Состав таблицы:<br/><ul><li>ФИО <em>(аватар и ссылка на досье персоны в зону контроля рабочего времени)</em></li><li>Должность</li><li>Начало работы <em>(среднее время первой активности за неделю в формате 00:00)</em></li><li>Окончание работы (среднее время окончания последней активности за неделю в формате 00:00)</li><li>Среднее активное время персоны <em>(в формате 0 ч 0 мин</em>, секунды не выводим<em>)</em></li><li>Среднее неактивное время персоны &nbsp;(в формате 0 ч 0 мин, секунды не выводим)</li><li>Количество запущенных уникальных приложений персоной</li></ul>По всем столбцам возможна сортировка, по убыванию и по возрастанию. Количество персон неограниченно, при необходимости появляется прокрутка таблицы.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1687" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>]]></testData>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[нажать на одну из строк с персонами&nbsp;]]></description>
+                        <expectedResult><![CDATA[Клик по плашке разворачивает детализацию по приложениям персоны. Клик по другой сворачивает открытое и разворачивает новую детализацию (аккордеон). Загружаем всё на клиент за раз.<br/>Состав таблицы:<br/><ul><li>Приложение/процесс <em>(иконку и название берем из справочника приложений, для неизвестных выводим типовую иконку и название процесса)</em></li></ul>Категория<em>&nbsp;(из справочника приложений, для неизвестных процессов пишем "Неизвестные приложения" Неизвестные - не складываем. Складываем по процессу)</em><br/><ul><li>Суммарная длительность <em>(сумма активного времени приложения за неделю, в формате 00:00:00)</em></li><li>Средняя длительность</li></ul><br/>По всем столбцам возможна сортировка, по убыванию и по возрастанию.<br/>Количество приложений выводим максимально 5 (10) за раз с возможностью постраничного показа.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1688" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Таблица "Приложения"&nbsp;]]></description>
+                        <expectedResult><![CDATA[Состав таблицы:<br/><ul><li>Приложение/процесс <em>(иконку и название берем из справочника приложений, для неизвестных выводим типовую иконку и название процесса)</em></li><li>Категория<em>&nbsp;(из справочника приложений, для неизвестных процессов пишем "Неизвестные приложения" )</em></li><li>Суммарная длительность <em>(сумма активного времени приложения за неделю, в формате 00:00:00)</em></li><li>Средняя длительность</li><li>Количество персон из этой группы запускавшие это приложение за выбранную неделю.</li></ul><br/>По всем столбцам возможна сортировка, по убыванию и по возрастанию. Количество приложений неограниченно, при необходимости появляется прокрутка таблицы.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1689" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[нажать на одну из строк с приложениями]]></description>
+                        <expectedResult><![CDATA[Клик по плашке разворачивает детализацию по персонам этой группы запускавшие это приложение. Клик по другой сворачивает открытое и разворачивает новую детализацию (аккордеон).<br/>Состав таблицы:<br/><ul><li>ФИО (аватар и ссылка на досье персоны в зону контроля рабочего времени)</li><li>Должность</li><li>Суммарная длительность <em>(сумма активного времени приложения за неделю, в формате 00:00:00)</em></li><li>Средняя длительность</li><li>Процент активного времени&nbsp;(процент от общей активности персоны за неделю)&nbsp;</li></ul><br/>По всем столбцам возможна сортировка, по убыванию и по возрастанию.<br/>Количество приложений выводим максимально 5 (10) за раз с возможностью постраничного показа.]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1690" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="8892" key="DOZOR-T3585">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 08:38:41 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Виджет "среднее начало и окончание дня"]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1691" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>проверяем виджет "среднее начало и окончание дня"]]></description>
+                        <expectedResult><![CDATA[на виджетах появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить показатель "среднее начало и окончание дня"&nbsp;]]></description>
+                        <expectedResult><![CDATA[Отображается :<br/><ul><li>Среднее начало дня за период и среднее окончание дня всех сотрудников группы. <em>(От первой активности до окончания последней активности)</em></li><li>Формат времени 00:00—00:00</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить показатель "самое раннее начало"]]></description>
+                        <expectedResult><![CDATA[Отображается :&nbsp;<br/><ol><li>Время ранней активности за неделю</li><li>Разница ранней активности за предыдущую неделю с текущим временем.<br/><strong><span style="color: rgb(184, 49, 47);">Для первой недели нет "предыдущего показателя" , поэтому стоит +0 ?</span></strong></li></ol>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить показатель "самое позднее начало"]]></description>
+                        <expectedResult><![CDATA[Отображается : <br/><ol><li>Время последней активности за неделю</li><li>Разница последней активности за предыдущую неделю с текущим временем.<br/><strong><span style="color: rgb(184, 49, 47);">Для первой недели нет "предыдущего показателя" , поэтому стоит +0 ?</span></strong></li></ol>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить показатель "самое раннее окончание"]]></description>
+                        <expectedResult><![CDATA[Отображается :<br/><ol><li>Время раннего окончания рабочих активностей за неделю</li><li>Разница раннего окончания за предыдущую неделю с текущим временем.<br/><strong><span style="color: rgb(184, 49, 47);">Для первой недели нет "предыдущего показателя" , поэтому стоит +0 ?</span></strong></li></ol>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[проверить показатель "самое позднее окончание"]]></description>
+                        <expectedResult><![CDATA[Отображается :<br/><ol><li>Время последнего окончания рабочих активностей за неделю</li><li>Разница последнего окончания за предыдущую неделю с текущим временем.<br/><strong><span style="color: rgb(184, 49, 47);">Для первой недели нет "предыдущего показателя" , поэтому стоит +0 ?</span></strong></li></ol>]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю . <br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями&nbsp; ( со знаками + и - соответственно)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:49 UTC</updatedOn>
+        </testCase>
+        <testCase id="8893" key="DOZOR-T3586">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 08:47:19 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Виджет "средний рабочий день"]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1692" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем виджет "Средний рабочий день"]]></description>
+                        <expectedResult><![CDATA[на виджетах появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверяем показатель среднего рабочего времени.]]></description>
+                        <expectedResult><![CDATA[Отображается:<br/><ul><li>Среднее рабочее время всех сотрудников группы <em>(за выбранную неделю)</em></li><li>Разница с предыдущей неделей <strong><span style="color: rgb(184, 49, 47);">(для первого тестового периода отсуствует предыдущий показатель, разница =текущему времени)</span></strong><br/><strong><span style="color: rgb(184, 49, 47);">отображается в минутах</span></strong></li><li>Время выводим в формате 0 ч 0 мин (секунды округляем)</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверяем график среднего активного времени по дням]]></description>
+                        <expectedResult><![CDATA[За каждый рабочий день выводится график среднего рабочего времени всех персон группы.<br/>На заднем фоне отображается такой же график за предыдущую неделю (в случае первой тестовой недели , график отсутствует)<br/><br/>Пунктиром на графике выведено значение среднего рабочего времени за прошлую неделю<br/><br/>Количество столбцов равно дням недели<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Навести курсор на столбец]]></description>
+                        <expectedResult><![CDATA[При наведении на столбец отображается дата и среднее рабочее время в этот день.<br/><span style="color: rgb(0, 0, 0);">в формате 21.04.2020:&nbsp; 8 час 0 минут</span>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю .<br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями ( со знаками + и - соответственно)<br/>Проверить , что для положительной разницы (средний рабочий день увеличился) - отображается зеленый треугольник - вершиной вверх.<br/><br/>Проверить , что для отрицательной разницы (средний рабочий день уменьшился) - отображается красный треугольник - вершиной вниз.<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:49 UTC</updatedOn>
+        </testCase>
+        <testCase id="8894" key="DOZOR-T3587">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 09:19:47 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Виджет "среднее активное время"]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1693" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем виджет "Среднее активное время"]]></description>
+                        <expectedResult><![CDATA[на виджетах появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверяем показатель среднего активного времени.]]></description>
+                        <expectedResult><![CDATA[Отображается:<br/><ul><li>Среднее активное время всех сотрудников группы <em>(за выбранную неделю)</em></li><li>Разница с предыдущей неделей <strong><span style="color: rgb(184, 49, 47);">(для первого тестового периода отсуствует предыдущий показатель, разница = текущему времени)</span></strong><br/><strong><span style="color: rgb(184, 49, 47);">Отображается в минутах</span></strong></li><li>Время выводим в формате 0 ч 0 мин (секунды округляем)</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверяем график среднего активного времени по дням]]></description>
+                        <expectedResult><![CDATA[За каждый рабочий день выводится график среднего активного времени всех персон группы.<br/>На заднем фоне отображается такой же график за предыдущую неделю (в случае первой тестовой недели , график отсутствует)<br/><br/>Пунктиром на графике выведено значение среднего активного времени за прошлую неделю <br/>Количество столбцов равно дням недели<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Навести курсор на столбец]]></description>
+                        <expectedResult><![CDATA[При наведении на столбец отображается дата и среднее активное время в этот день.<br/><span style="color: rgb(0, 0, 0);">в формате 21.04.2020: &nbsp;1 час 0 минут</span>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю .<br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями ( со знаками + и - соответственно)<br/>Проверить , что для положительной разницы (среднее активное время увеличилось) - отображается зеленый треугольник - вершиной вверх.<br/><br/>Проверить , что для отрицательной разницы (среднее активное время уменьшилось) - отображается красный треугольник - вершиной вниз.<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:49 UTC</updatedOn>
+        </testCase>
+        <testCase id="8895" key="DOZOR-T3588">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 09:26:07 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Виджет "среднее неактивное время"]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1694" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем виджет "Среднее неактивное время"]]></description>
+                        <expectedResult><![CDATA[на виджетах появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверяем показатель среднего неактивного времени.]]></description>
+                        <expectedResult><![CDATA[Отображается:<br/><ul><li>Среднее неактивное время всех сотрудников группы <em>(за выбранную неделю)</em></li><li>Разница с предыдущей неделей <strong><span style="color: rgb(184, 49, 47);">(для первого тестового периода отсуствует предыдущий показатель, разница = текущему значению)</span></strong></li><li>Время выводим в формате 0 ч 0 мин (секунды округляем)</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверяем график среднего неактивного времени по дням]]></description>
+                        <expectedResult><![CDATA[За каждый рабочий день выводится график среднего неактивного времени всех персон группы.<br/>На заднем фоне отображается такой же график за предыдущую неделю (в случае первой тестовой недели , график отсутствует)<br/><br/>Пунктиром на графике выведено значение среднего неактивного времени за прошлую неделю<br/><br/>Количество столбцов равно дням недели<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Навести курсор на столбец]]></description>
+                        <expectedResult><![CDATA[При наведении на столбец отображается дата и среднее неактивное время в этот день.<br/><span style="color: rgb(0, 0, 0);">в формате 21.04.2020: &nbsp;1 час 0 минут</span>]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю .<br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями ( со знаками + и - соответственно)<br/>Проверить , что для положительной разницы (среднее не активное время увеличилось) - отображается красный треугольник - вершиной вверх.<br/><br/>Проверить , что для отрицательной разницы (среднее неактивное время уменьшилось) - отображается зеленый треугольник - вершиной вниз.<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:49 UTC</updatedOn>
+        </testCase>
+        <testCase id="8896" key="DOZOR-T3589">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 09:32:26 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Сотрудники": состав данных]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики &nbsp;DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Сотрудники"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверяем шапку таблицы]]></description>
+                        <expectedResult><![CDATA[Шапка таблицы:<ul><li>ФИО</li><li>Подразделение</li><li>Начало</li><li>Окончание</li><li>Средняя активность</li><li>Общая активность</li><li>количество запущенных уникальных приложений персоной (иконка монитора)</li></ul><br/>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[столбец ФИО&nbsp;]]></description>
+                        <expectedResult><![CDATA[Отображается аватар персоны ,&nbsp; его ФИО и снизу должность<br/><br/>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[столбец "Подразделение"]]></description>
+                        <expectedResult><![CDATA[Отображается Подразделение персоны , в случае длинной - троеточие<br/><br/>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[столбец "Начало"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Начало работы (среднее время первой активности за неделю в формате 00:00)</li></ul>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период<em><br/></em>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[столбец "Окончание]]></description>
+                        <expectedResult><![CDATA[<ul><li>Окончание работы (среднее время окончания последней активности за неделю в формате 00:00)</li></ul>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[столбец "Средняя активность"&nbsp;]]></description>
+                        <expectedResult><![CDATA[<ul><li>Среднее активное время персоны &nbsp;(в формате 0 ч 0 мин, секунды не выводим)</li><li>Разница активного времени с предыдущей неделей <b>(для первого тестового периода отсутствует предыдущий показатель, разница =текущему времени).&nbsp;</b><br/>Отображается в минутах</li></ul><br/>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[столбец "Общая активность"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Общее активное &nbsp;время персоны &nbsp;(в формате 0 ч 0 мин, секунды не выводим).<br/>Это сумма по всем приложениям за неделю</li><li>Разница общего активного времени с предыдущей неделей <strong>(для первого тестового периода отсуствует предыдущий показатель, разница =текущему времени)</strong><br/>Выводится в минутах</li></ul>Проверяем корректность отображения для каждой персоны в тестовой группе за выбранный тестовый период]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю .<br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями ( со знаками + и - соответственно)]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[Проверить ,что если сотрудник не работал на следующей неделе , то для него все равно есть строка с подсчетом разницы активного времени с предыдущей неделей.<br/>при раскрытии такого сотрудника будет запись&nbsp; ""За данный период у пользователя не было активности""]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="8897" key="DOZOR-T3590">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 09:34:25 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Сотрудники": переходы]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Сотрудники"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Нажать на ФИО персоны]]></description>
+                        <expectedResult><![CDATA[Открывается полная карточка персоны на вкладке КРВ]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[свернуть карточку персоны&nbsp;]]></description>
+                        <expectedResult><![CDATA[Возвращаемся на открытый ранее экран <br/>Выбранный период и все сортировки&nbsp; сохранены]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Нажать на Подразделение]]></description>
+                        <expectedResult><![CDATA[Открывается выбранное подразделение на вкладке КРВ.<br/>Выбранный ранее тестовый период сохранен]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="8898" key="DOZOR-T3591">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 10:07:35 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Сотрудники": сортировка]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Сотрудники"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по умолчанию]]></description>
+                        <expectedResult><![CDATA[по умолчанию таблица отсортирована по среднее активное время]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[убедиться, что есть скрол для пролистывания всех персон в таблице]]></description>
+                        <expectedResult><![CDATA[скролл работает корректно]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[убедиться, что для каждого столбца есть сортировка]]></description>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по каждому столбцу]]></description>
+                        <expectedResult><![CDATA[сортировка работает. Данные сортируется в соответствии с заданной сортировкой]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[раскрыть одну из персон <br/>в открывшейся таблице приложений&nbsp; поменять сортировку]]></description>
+                        <expectedResult><![CDATA[убедиться, что сортировка внутри таблицы приложений не сбивает сортировку таблицы персон.]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[снова поменять сортировку&nbsp; в таблице персон]]></description>
+                        <expectedResult><![CDATA[таблица приложений закрывается, список персон корректно отсортируется по выставленной сортировке]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю]]></description>
+                        <expectedResult><![CDATA[проверить , что состав данных изменился, но сортировка осталась&nbsp; (та что выбрали на предыдущем шаге)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="8899" key="DOZOR-T3592">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-04-29 10:08:24 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Сотрудники": внутренняя таблица процессов]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики  DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Персоны"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[нажать на плашку (плюсик) на одной из персон]]></description>
+                        <expectedResult><![CDATA[появляется таблица процессов данной персоны&nbsp;]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить наличие столбцов в таблице процессов у персоны<br/>проверить корректность данных для процессов]]></description>
+                        <expectedResult><![CDATA[столбцы :<ul><li>Приложение\процесс</li><li>Категория</li><li>средняя длительность</li><li>суммарная длительность</li><li>процент активного времени</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить, что есть "страницы" для внутренней таблицы процессов]]></description>
+                        <expectedResult><![CDATA[проверить пролистываение страниц и отображение процессов]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по всем столбцам]]></description>
+                        <expectedResult><![CDATA[по умолчанию сортировка по средней длительности. <br/>Данные в таблице меняются согласно выставленной сортировке]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Проверить ,что если сотрудник не работал на следующей неделе , то для него все равно есть строка с подсчетом разницы активного времени с предыдущей неделей.<br/>при раскрытии такого сотрудника будет запись  ""За данный период у пользователя не было активности""]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9007" key="DOZOR-T3642">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-02 15:47:32 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Приложения": сортировка]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Приложения"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по умолчанию]]></description>
+                        <expectedResult><![CDATA[по умолчанию таблица отсортирована по "суммарно по группе"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[убедиться, что есть постраничный вывод для просмотра всех приложений в таблице]]></description>
+                        <expectedResult><![CDATA[можно посмотреть все предложения группы]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[убедиться, что для каждого столбца есть сортировка]]></description>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по каждому столбцу]]></description>
+                        <expectedResult><![CDATA[сортировка работает. Данные сортируется в соответствии с заданной сортировкой]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[раскрыть одно из приложений<br/>в открывшейся таблице персон поменять сортировку]]></description>
+                        <expectedResult><![CDATA[убедиться, что сортировка внутри таблицы персон не сбивает сортировку таблицы приложений.]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[снова поменять сортировку &nbsp;в таблице приложений]]></description>
+                        <expectedResult><![CDATA[таблица персон закрывается, список приложений корректно отсортируется по выставленной сортировке]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю]]></description>
+                        <expectedResult><![CDATA[проверить , что состав данных изменился, но сортировка осталась&nbsp; (та что выбрали на предыдущем шаге)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9008" key="DOZOR-T3643">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-04 10:02:36 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Приложения": состав данных]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики &nbsp;DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Приложения"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверяем шапку таблицы]]></description>
+                        <expectedResult><![CDATA[Шапка таблицы:<ul><li>Приложение\Процесс</li><li>Категории</li><li>Суммарно по группе</li><li>Среднее по персоне за день</li><li>количество персон (иконка)</li></ul><br/>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[столбец "Приложение\Процесс "]]></description>
+                        <expectedResult><![CDATA[Приложение/процесс <em>(иконку и название берем из справочника приложений, для неизвестных выводим типовую иконку и название процесса)</em>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить, что при наведении курсора появляется тултип]]></description>
+                        <expectedResult><![CDATA[в тултипе описание приложения - процесс\описание]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[столбец "Категория"]]></description>
+                        <expectedResult><![CDATA[Категория<em>&nbsp;(из справочника приложений, для неизвестных процессов пишем "Неизвестные приложения" )</em>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[столбец "Суммарная длительность"]]></description>
+                        <expectedResult><![CDATA[Суммарная длительность <em>(сумма активного времени приложения за неделю, в формате 00:00:00)</em>]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[столбец "Средняя длительность"]]></description>
+                        <expectedResult><![CDATA[<ul><li>Средняя длительность по персоне</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[столбец "Количество персон"&nbsp;]]></description>
+                        <expectedResult><![CDATA[<ul><li>Количество персон из этой группы запускавшие это приложение за выбранную неделю.</li><li>Проверить, что при наведении есть подсказка:</li></ul>Количество персон, запускавших приложение<br/>Quantity of persons who launched the application]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[выбрать следующую тестовую неделю .<br/>и повторить тест]]></description>
+                        <expectedResult><![CDATA[проверить, что показатели соответствующим образом изменятся<br/>проверить, что появилась отличная от 0 разница между показателями ( со знаками + и - соответственно)]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9009" key="DOZOR-T3644">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-04 10:09:01 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Приложения": внутренняя таблица Сотрудников]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики DOZOR-41906<br/>+ доработка  <a data-issue-key="DOZOR-42117" href="https://jira.solarsecurity.ru/browse/DOZOR-42117" rel="155110">DOZOR-42117</a>]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Приложения"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[нажать на плашку (плюсик) на одном из приложений]]></description>
+                        <expectedResult><![CDATA[<ul><li>появляется таблица сотрудников, запускавших данное приложение</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить наличие столбцов во внутренней таблице сотрудников<br/>проверить корректность данных во внутренней таблице]]></description>
+                        <expectedResult><![CDATA[Состав таблицы:<br/><ul><li>ФИО (аватар , &nbsp;ссылка на досье персоны в зону контроля рабочего времени , должность)</li><li>подразделение</li><li>Суммарная длительность <em>(сумма активного времени приложения за неделю, в формате 00:00:00)</em></li><li>Средняя длительность</li><li>Процент активного времени (процент от общей активности персоны за неделю)&nbsp;</li></ul>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить, что есть "страницы" для внутренней таблицы&nbsp;]]></description>
+                        <expectedResult><![CDATA[проверить пролистываение страниц и отображение персон]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить , что есть настройка "количество персон на страницу" ,&nbsp;]]></description>
+                        <expectedResult><![CDATA[выставлена по умолчанию в 5.]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[выставить 10 персон на страницу , <br/><br/>]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[проверить сортировку по всем столбцам]]></description>
+                        <expectedResult><![CDATA[по умолчанию сортировка по средней длительности. <br/>Данные в таблице меняются согласно выставленной сортировке]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9010" key="DOZOR-T3645">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-04 10:30:31 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Приложения": переходы]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Приложения"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Нажать на ФИО персоны]]></description>
+                        <expectedResult><![CDATA[Открывается полная карточка персоны на вкладке КРВ]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[свернуть карточку персоны&nbsp;]]></description>
+                        <expectedResult><![CDATA[Возвращаемся на открытый ранее экран <br/>Выбранный период и все сортировки&nbsp; сохранены]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Нажать на Подразделение]]></description>
+                        <expectedResult><![CDATA[Открывается выбранное подразделение на вкладке КРВ.<br/>Выбранный ранее тестовый период сохранен]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9011" key="DOZOR-T3646">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-04 12:26:26 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Таблица "Приложения": фильтр по категориям]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики &nbsp;DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Приложения"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю<br/>над таблицей&nbsp; фильтр по категориям приложений]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить фильтр по категориям приложений]]></description>
+                        <expectedResult><![CDATA[по умолчанию фильтр не выбран - отображается подсказка "выберите категории приложений"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[установить курсор в фильтр по категориям]]></description>
+                        <expectedResult><![CDATA[появляется выпадающий список =справочнику приложений <br/>в самой нижней строке - пункт для выбора отсутствующих приложений]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[выбрать пункт "отсутствующие в справочнике"]]></description>
+                        <expectedResult><![CDATA[в таблице остаются только процессы с неизвестными категориями]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выбрать несколько категорий в фильтр]]></description>
+                        <expectedResult><![CDATA[проверить, что таблица отфильтрована по выбранным категориям<br/>проверить сортировку&nbsp; в таблице]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[удалить выбранные категории из фильтра]]></description>
+                        <expectedResult><![CDATA[проверить, что в таблице отобразились все данные]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[выбрать несколько категорий высшего уровня]]></description>
+                        <expectedResult><![CDATA[проверить, что таблица отфильтрована по выбранным категориям<br/>проверить сортировку  в таблице]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[установить курсор в фильтр по категориям<br/>проверить поиск по дереву категорий]]></description>
+                        <expectedResult><![CDATA[найденное попадает в фокус и подсвечивается]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[выбрать несколько категорий с помощью поиска]]></description>
+                        <expectedResult><![CDATA[проверить, что таблица отфильтрована по выбранным категориям<br/>проверить сортировку  в таблице]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[сменить фильтр по периоду]]></description>
+                        <expectedResult><![CDATA[проверить , что загрузились данные за выбранную неделю<br/>проверить, что фильтр по категориям остался выбранным и данныевтаблице отсортированы согласно выбранному фильтру]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9015" key="DOZOR-T3650">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-05 14:25:59 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41932</key>
+                    <summary><![CDATA[Выгрузка статистики КРВ по группе в CSV]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Выгрузка в csv: Статистика по приложениям по дням]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-41932" href="https://jira.solarsecurity.ru/browse/DOZOR-41932" rel="154784">DOZOR-41932</a> Выгрузка статистики КРВ по группе в CSV<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>перейти на вкладку "КРВ" <br/>выбрать тестовый период]]></description>
+                        <expectedResult><![CDATA[проверить наличие функционала выгрузки в csv<br/>- в правом верхнем углу кнопка "Экспорт в csv"<br/><br/>при нажатии появляются 3 возможности выгрузки :<br/>- статистика по приложениям по дням<br/>- статистика по приложениям суммарно за период<br/>- статистика по рабочим дням за период]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[нажать на "-статистика по приложениям по дням"]]></description>
+                        <expectedResult><![CDATA[выгружается файл &nbsp;в формате&nbsp;<table><tbody><tr><td>${dayFrom}_${dayTo}_timecontrol_daily_$НазваниеГруппы.csv</td></tr><tr></tr></tbody></table>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Открыть файл в Excel<br/>проверить наличие колонок в файле]]></description>
+                        <expectedResult><![CDATA[в файле следуюшие колонки :<br/><table><thead><tr><th data-column="0">Поле</th><th data-column="1">Описание</th></tr></thead><tbody><tr><td>Высшая категория приложения</td><td>&nbsp;</td></tr><tr><td>Группа</td><td>&nbsp;</td></tr><tr><td>Дата</td><td>&nbsp;</td></tr><tr><td>Должность&nbsp;</td><td>&nbsp;</td></tr><tr><td>Категория приложения</td><td>&nbsp;</td></tr><tr><td>Название приложения</td><td>Если система не нашла для процесса соответствующее ему приложение, выводится: неизвестное приложение<br/>К справочнику привязка идёт в момент укладки данных в базу, а не в момент показа пользователю. это значит, что если приложение в справочнике изменится или перенесётся в другую категорию, то привязка не обновится</td></tr><tr><td>Название процесса</td><td>&nbsp;</td></tr><tr><td colspan="1">Среднее активное время в приложении</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Среднее начало работы в приложении&nbsp;</td><td colspan="1">Здесь и для других параметров см. описание расчетов в статье<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61538449" rel="nofollow">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61538449</a>,<br/>секция Расчет времени</td></tr><tr><td colspan="1">Среднее окончание работы в приложении</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Суммарное активное время в приложении</td><td colspan="1">&nbsp;</td></tr><tr><td>ФИО&nbsp;</td><td>&nbsp;</td></tr></tbody></table><br/>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить выгруженные данные&nbsp;]]></description>
+                        <expectedResult><![CDATA[в отчет попадают все приложения за выбранную неделю , агрегированные по персоне и процессу за каждый день&nbsp;]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1718" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить корректность отображения на русской и английской локали]]></description>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[сменить период и повторить кейс]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-18 10:27:59 UTC</updatedOn>
+        </testCase>
+        <testCase id="9016" key="DOZOR-T3651">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-05 16:02:11 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41932</key>
+                    <summary><![CDATA[Выгрузка статистики КРВ по группе в CSV]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Выгрузка в csv: Статистика  по приложениям суммарно за период]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-41932" href="https://jira.solarsecurity.ru/browse/DOZOR-41932" rel="154784">DOZOR-41932</a> Выгрузка статистики КРВ по группе в CSV<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>перейти на вкладку "КРВ" <br/>выбрать тестовый период]]></description>
+                        <expectedResult><![CDATA[проверить наличие функционала выгрузки в csv<br/>- в правом верхнем углу кнопка "Экспорт в csv"<br/><br/>при нажатии появляются 3 возможности выгрузки :<br/>- статистика по приложениям по дням<br/>- статистика по приложениям суммарно за период<br/>- статистика по рабочим дням за период]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[нажать на " статистика по приложениям суммарно за период"]]></description>
+                        <expectedResult><![CDATA[выгружается файл &nbsp;в формате&nbsp;<table><tbody><tr><td>${dayFrom}_${dayTo}_timecontrol_period_$НазваниеГруппы.csv</td></tr><tr></tr></tbody></table>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Открыть файл в Excel<br/>проверить наличие колонок в файле]]></description>
+                        <expectedResult><![CDATA[в файле следуюшие колонки :<br/><br/><pre>П</pre><table><thead><tr><th data-column="0">Поле</th><th data-column="1">Описание</th></tr></thead><tbody><tr><td>Дата начала периода</td><td>&nbsp;</td></tr><tr><td colspan="1">Дата окончания периода</td><td colspan="1">&nbsp;</td></tr><tr><td>Группа</td><td>&nbsp;</td></tr><tr><td>ФИО&nbsp;</td><td>&nbsp;</td></tr><tr><td>Должность&nbsp;</td><td>&nbsp;</td></tr><tr><td>Название процесса</td><td>&nbsp;</td></tr><tr><td>Название приложения</td><td>&nbsp;</td></tr><tr><td>Категория приложения</td><td>категория приложений по справочнику, уровень 1</td></tr><tr><td>Высшая категория приложения</td><td>категория приложений по справочнику, уровень 2</td></tr><tr><td colspan="1">Среднее начало работы в приложении&nbsp;</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Среднее окончание работы в приложении</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Среднее активное время в приложении</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Суммарное активное время в приложении</td><td colspan="1">&nbsp;</td></tr></tbody></table><br/>]]></expectedResult>
+                        <testData><![CDATA[<div data-unread-text="Непрочитанные сообщения" dir="auto">&nbsp;"Среднее Начало работы в приложении" :<br/>1) для каждой персоны берётся самое раннее начало работы в конкретном приложении за день<br/>2) затем усредняется для каждой персоны за неделю (учитываются только те дни, когда эта персона пользовалась приложением)</div>]]></testData>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить выгруженные данные&nbsp;]]></description>
+                        <expectedResult><![CDATA[в отчет попадают все приложения за выбранную неделю , агрегированные по персоне и процессу за неделю&nbsp;]]></expectedResult>
+                        <testData><![CDATA[<img src="../rest/tests/1.0/attachment/image/1718" style="width: 300px;" class="fr-fic fr-fil fr-dib">]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить корректность отображения на русской и английской локали]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-18 10:29:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9062" key="DOZOR-T3657">
+            <attachments/>
+            <component><![CDATA[Досье]]></component>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-07 11:15:48 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Нет доступа к разделу "КРВ", Досье =только ОШС]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "нет КРВ"<br/><strong>не отмечать</strong> чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>отметить чекбоксом оба рабочих стола - и администратора и руководителя.<br/>сохранить.]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестувую роль "нет КРВ"]]></description>
+                        <expectedResult><![CDATA[убедиться, что в карточке пользователя нет поля "доступны только группы"]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему. <br/><br/>]]></description>
+                        <expectedResult><![CDATA[Сразу открывается Рабочий стол администратора.]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Проверить переключатель рабочих столов]]></description>
+                        <expectedResult><![CDATA[есть значения <br/>- рабочий стол администратора<br/>- рабочий стол руководителя<br/>нет значения <br/>-рабочий стол КРВ]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[в Досье перейти в тестовую Группу Досье (с данными для КРВ)]]></description>
+                        <expectedResult><![CDATA[в группе Досье нет вкладки "Контроль Рабочего времени" (или не активна)<br/><br/>]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку персоны из тестовой группы.]]></description>
+                        <expectedResult><![CDATA[в карточке персоны нет вкладки "Контроль Рабочего времени" (или не активна)<br/><br/>]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Фадеева Анна Игоревна</updatedBy>
+            <updatedOn>2021-09-14 13:59:18 UTC</updatedOn>
+        </testCase>
+        <testCase id="9071" key="DOZOR-T3659">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-07 19:18:06 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Постраничный фильтр на страницах]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики &nbsp;DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Сотрудники"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Отматываем скрол в самый низ страницы]]></description>
+                        <expectedResult><![CDATA[проверяем , что рядом со списком страниц есть настройка &nbsp;для вывода количества персон на страницу<br/>- 10 /стр<br/>- 30 /стр<br/>- 50 /стр<br/>- 100 /стр]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[выбрать 30]]></description>
+                        <expectedResult><![CDATA[убедиться, что таблица перестроилась, персон выводится 30 , количество страниц уменьшилось]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[перейти на таблицу Приложений и так же выставить настройку отображения количества приложений - в 50 например]]></description>
+                        <expectedResult><![CDATA[проверить, что в таблице приложений есть настройка вывода количества приложений на страницу со значениями<br/>- 10 /стр<br/>- 30 /стр<br/>- 50 /стр<br/>- 100 /стр<br/>убедиться, что таблица перестроилась, приложений выводится 30 , количество страниц уменьшилось]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[вернуться на таблицу Сотрудников&nbsp;]]></description>
+                        <expectedResult><![CDATA[проверить, что количество выводимых персон на страницу сохранилось]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[перейти в другую группу персон]]></description>
+                        <expectedResult><![CDATA[проверить, что количество выводимых персон на страницу сохранилось<br/>проверить, что количество выводимых приложений на страницу сохранилось]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9072" key="DOZOR-T3660">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-08 09:26:27 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41919</key>
+                    <summary><![CDATA[КРВ. Досье. Ограничение данных КРВ по группам досье]]></summary>
+                </issue>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Мультидозор, КРВ , Досье: Полный доступ]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени и мультидозором<br/>засинхронизовано АД,<br/><br/>Создать ОргЕдиницу1 с ТестГруппой1 (у которой есть данные по КРВ)<br/>Создать ОргЕдиницу3 с ТестГруппой2 (у которой нет данных по КРВ)<br/>Создать ОргЕдиницу4 с без групп , только кластер<br/>Есть еще Группа5, которая не входит в Оргединицы , но у которой тоже есть тестовые данные по КРВ<br/><br/><br/><br/>поставить несколько групп ОШС на особый контроль.<br/>создать несколько разделов и групп. Добавить в эти группы созданные вручную персоны , созданные автоматически персоны, персоны из ОШС]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье как <strong>"Доступ ограничен группами организационной структуры"</strong><br/>сохранить.<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестовую роль КРВ<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что после выставления тестовой роли КРВ , появляется пустое поле "доступны только группы персон".<br/>Также в карточке пользователя есть поле для ограничения по Оргединицам.  - по умолчанию пустое.]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные по всем отделам и персонам]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу1.<br/>сохранить.&nbsp;]]></description>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные только по группе, связанной с Оргединицей1. <br/>Есть данные только по персонам из этой группы]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу3.<br/>сохранить.&nbsp;]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[проверить, что нет данных по КРВ&nbsp;]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу4.<br/>сохранить. ]]></description>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные по всем отделам и персонам]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-10 09:33:28 UTC</updatedOn>
+        </testCase>
+        <testCase id="9093" key="DOZOR-T3661">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-09 09:31:18 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Фильтр по колонкам в таблице "персоны"]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-42005" href="https://jira.solarsecurity.ru/browse/DOZOR-42005" rel="154867">DOZOR-42005</a>  Добавить фильтр по полям<br/><br/>]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Персоны"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Проверить наличие фильтров в заголовке таблицы]]></description>
+                        <expectedResult><![CDATA[Убедиться, что есть фильтры у столбцов <br/>- Начало <br/>- Окончание<br/>- Средняя активность<br/>- Общая активность]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить формат времени в самом фильтре и в тултипе]]></description>
+                        <expectedResult><![CDATA[в самом фильтре- время в часах<br/>в тултипе - в формате ч:мм]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Выставить фильтр на "начало", например , чтобы отобразить всех кто пришел позже 9ти утра]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "окончание", например, чтобы отобразить всех кто ушел позже 18:00&nbsp;]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[выполнить сортировку по колонкам<br/>выполнить переход по страницам<br/>выполнить переход по периодам<br/>открыть карточку персоны и свернуть ее.<br/>развернуть внутреннюю таблицу приложений , выполнить сортировку там]]></description>
+                        <expectedResult><![CDATA[фильтр остается сохраненным]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтры]]></description>
+                        <expectedResult><![CDATA[В таблицу выведены все данные]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "среднюю активность" , например, чтобы отобразились все, кто работал более 7часов в среднем]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "Общую активность" , например, чтобы отобразились все, кто работал менее 40ка часов за неделю]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[выполнить сортировку по колонкам.<br/>выполнить переход по страницам.<br/>выполнить переход по периодам .<br/>открыть карточку персоны и свернуть ее.<br/>развернуть внутреннюю таблицу приложений , выполнить сортировку там]]></description>
+                        <expectedResult><![CDATA[фильтр остается сохраненным]]></expectedResult>
+                    </step>
+                    <step index="10">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтры]]></description>
+                        <expectedResult><![CDATA[В таблицу выведены все данные]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9094" key="DOZOR-T3662">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-09 09:52:20 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Фильтр по колонкам в таблице "персоны": поиск нулевых значений]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-42005" href="https://jira.solarsecurity.ru/browse/DOZOR-42005" rel="154867">DOZOR-42005</a>  Добавить фильтр по полям<br/><br/>]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Персоны"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Выставить фильтр на "начало" в 0 &nbsp;например , чтобы отобразить всех&nbsp; у кого не было активности за текущую неделю]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтр]]></description>
+                        <expectedResult><![CDATA[все данные в таблице]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "окончание" в 0 &nbsp;например , чтобы отобразить всех &nbsp;у кого не было активности за текущую неделю]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтр]]></description>
+                        <expectedResult><![CDATA[В таблицу выведены все данные]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "среднюю активность" в 0 &nbsp;например , чтобы отобразить всех &nbsp;у кого не было активности за текущую неделю]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтр]]></description>
+                        <expectedResult><![CDATA[В таблицу выведены все данные]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[выставить фильтр на "Общую активность" в 0 &nbsp;например , чтобы отобразить всех &nbsp;у кого не было активности за текущую неделю]]></description>
+                        <expectedResult><![CDATA[данные в таблице выведены согласно выставленному фильтру]]></expectedResult>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[сбросить фильтр]]></description>
+                        <expectedResult><![CDATA[В таблицу выведены все данные]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9095" key="DOZOR-T3663">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-10 09:29:23 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+                <issue>
+                    <key>DOZOR-41919</key>
+                    <summary><![CDATA[КРВ. Досье. Ограничение данных КРВ по группам досье]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Мультидозор, КРВ , Досье: только ОШС]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени и мультидозором<br/>засинхронизовано АД,<br/><br/>Создать ОргЕдиницу1 с ТестГруппой1, ТестГруппой2, ТестГруппой3 (у которых есть данные по КРВ)<br/>Создать ОргЕдиницу2 с ТестГруппой4 (у которой нет данных по КРВ)<br/>Создать ОргЕдиницу4 с без групп , только кластер<br/>Есть еще Группа5, которая не входит в Оргединицы , но у которой тоже есть тестовые данные по КРВ<br/><br/>поставить несколько групп ОШС на особый контроль.<br/>создать несколько разделов и групп. Добавить в эти группы созданные вручную персоны , созданные автоматически персоны, персоны из ОШС]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье как <strong>"Доступ ограничен группами организационной структуры"</strong><br/>сохранить.<br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[создать нового пользователя qa , выдать ему тестовую роль КРВ<br/>Выставить в поле "Оргединицы" = ОргЕдиница1<br/><br/><br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что после выставления тестовой роли КРВ , появляется пустое поле "доступны только группы персон".<br/>Также в карточке пользователя есть поле для ограничения по Оргединицам.  - по умолчанию пустое.]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные по группам Группа1, Группа2, Группа3 и персонам из этой группы. <br/>Данные по Группе4 не отображаются]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить "Доступные Группы = Группа2".<br/>сохранить. ]]></description>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные по группе Группа2 и персонам из этой группы.<br/>Данные по Группе4, Группе1 и Группе3 не отображаются]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу2.<br/>И оставить в "доступных группах" = Группа2<br/>сохранить. ]]></description>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[проверить, что нет данных по КРВ &nbsp;ни у группы2 ни у каких либо других]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу4.<br/>И оставить в "доступных группах" = Группа2<br/><br/>сохранить.]]></description>
+                    </step>
+                    <step index="8">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[Есть данные по группе Группа2 и персонам из этой группы.<br/>Данные по Группе4, Группе1 и Группе3 не отображаютсяЕсть данные по всем отделам и персонам]]></expectedResult>
+                    </step>
+                    <step index="9">
+                        <customFields/>
+                        <description><![CDATA[суперадмином, в карточку пользователя выставить ОргЕдиницу4.<br/>И выставить в "доступных группах" = Группа5<br/><br/>сохранить.]]></description>
+                        <expectedResult><![CDATA[]]></expectedResult>
+                    </step>
+                    <step index="10">
+                        <customFields/>
+                        <description><![CDATA[Зайти тестовым пользователем, проверить <br/>-  рабочий стол КРВ <br/> -  в карточках Досье <br/>- в карточках Персоны ]]></description>
+                        <expectedResult><![CDATA[проверить, что нет данных по КРВ &nbsp;ни у группы2 ни у каких либо других]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-10 09:39:04 UTC</updatedOn>
+        </testCase>
+        <testCase id="9254" key="DOZOR-T3669">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-13 13:59:10 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41636</key>
+                    <summary><![CDATA[КРВ. Досье. Группа. Новая вкладка КРВ]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Постраничный фильтр во внутренних таблицах]]></name>
+            <objective><![CDATA[<img src="../rest/tests/1.0/attachment/image/1695" style="width: 300px;" class="fr-fic fr-fil fr-dib"><br/>+ изменения требований DOZOR-41947<br/>+ не делаем пока графики &nbsp;DOZOR-41906]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть тестовую группу персон (с данными по КРВ).<br/>Вкладка "Рабочее время"<br/>Выбрать первый тестовый период с данными.<br/>Проверяем таблицу "Сотрудники"]]></description>
+                        <expectedResult><![CDATA[в таблице появляются данные за первую тестовую неделю]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Открываем внутреннюю таблицу - приложений<br/><br/>]]></description>
+                        <expectedResult><![CDATA[проверяем , что рядом со списком страниц есть настройка &nbsp;для вывода количества персон на страницу<br/>- 5/стр<br/>- 10 /стр<br/>- 30 /стр<br/>- 60 /стр]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[выбрать 10]]></description>
+                        <expectedResult><![CDATA[убедиться, что таблица перестроилась, персон выводится 10 , количество страниц уменьшилось]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[перейти на таблицу Приложений и так же выставить настройку отображения количества приложений - в 30 например]]></description>
+                        <expectedResult><![CDATA[проверить, что в таблице приложений есть настройка вывода количества приложений на страницу со значениями<br/>- 5/стр<br/>- 10 /стр<br/>- 30 /стр<br/>- 60 /стр<br/>убедиться, что таблица перестроилась, приложений выводится 30 , количество страниц уменьшилось]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[вернуться на таблицу Сотрудников&nbsp;]]></description>
+                        <expectedResult><![CDATA[проверить, что количество выводимых персон на страницу сохранилось]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[перейти в другую группу персон]]></description>
+                        <expectedResult><![CDATA[проверить, что количество выводимых персон на страницу сохранилось<br/>проверить, что количество выводимых приложений на страницу сохранилось]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-16 17:42:50 UTC</updatedOn>
+        </testCase>
+        <testCase id="9348" key="DOZOR-T3698">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-18 10:21:58 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41932</key>
+                    <summary><![CDATA[Выгрузка статистики КРВ по группе в CSV]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Выгрузка в csv: Статистика по рабочим дням за период]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-41932" href="https://jira.solarsecurity.ru/browse/DOZOR-41932" rel="154784">DOZOR-41932</a> Выгрузка статистики КРВ по группе в CSV<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>перейти на вкладку "КРВ" <br/>выбрать тестовый период]]></description>
+                        <expectedResult><![CDATA[проверить наличие функционала выгрузки в csv<br/>- в правом верхнем углу кнопка "Экспорт в csv"<br/><br/>при нажатии появляются 3 возможности выгрузки :<br/>- статистика по приложениям по дням<br/>- статистика по приложениям суммарно за период<br/>- статистика по рабочим дням за период]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[нажать на "статистика по рабочим дням за период"]]></description>
+                        <expectedResult><![CDATA[выгружается файл &nbsp;в формате&nbsp;<table><tbody><tr><td>${dayFrom}_${dayTo}_timecontrol_timesheet_$НазваниеГруппы.csv</td></tr></tbody></table><br/>]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[Открыть файл в Excel<br/>проверить наличие колонок в файле]]></description>
+                        <expectedResult><![CDATA[<table><thead><tr><th data-column="0">Поле</th><th data-column="1">Описание</th></tr></thead><tbody><tr><td colspan="1">Дата начала периода</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Дата окончания периода</td><td colspan="1">&nbsp;</td></tr><tr><td>Группа</td><td>&nbsp;</td></tr><tr><td>ФИО&nbsp;</td><td>&nbsp;</td></tr><tr><td colspan="1">Должность</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Среднее начало рабочего дня</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Среднее окончание рабочего дня</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Средняя продолжительность рабочего дня</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">&nbsp;Количество рабочих дней</td><td colspan="1">&nbsp;</td></tr><tr><td colspan="1">Дата-время начала рабочего дня</td><td colspan="1">$DateYYYY-MM-DD_Приход</td></tr><tr><td colspan="1">Дата-время окончания рабочего дня</td><td colspan="1">$DateYYYY-MM-DD_Уход</td></tr></tbody></table>]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[проверить выгруженные данные&nbsp;]]></description>
+                        <expectedResult><![CDATA[]]></expectedResult>
+                        <testData><![CDATA[<br/><br/>]]></testData>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[проверить корректность отображения на русской и английской локали]]></description>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[сменить период выгрузки и повторить кейс]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-18 10:28:30 UTC</updatedOn>
+        </testCase>
+        <testCase id="9349" key="DOZOR-T3699">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-18 10:33:48 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41932</key>
+                    <summary><![CDATA[Выгрузка статистики КРВ по группе в CSV]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Выгрузка в csv: проверка периодов]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-41932" href="https://jira.solarsecurity.ru/browse/DOZOR-41932" rel="154784">DOZOR-41932</a> Выгрузка статистики КРВ по группе в CSV<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>перейти на вкладку "КРВ" <br/>выбрать тестовый период]]></description>
+                        <expectedResult><![CDATA[проверить наличие функционала выгрузки в csv<br/>- в правом верхнем углу кнопка "Экспорт в csv"<br/><br/>при нажатии появляется календарь и возможные выгрузки в csv]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[проверить работу календаря]]></description>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить выгрузки с разными выбранными периодами <br/> - один день <br/>- несколько дней <br/>- несколько недель<br/>- месяц <br/>- 3 месяца<br/>- полгода]]></description>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-18 10:35:33 UTC</updatedOn>
+        </testCase>
+        <testCase id="9350" key="DOZOR-T3700">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-05-18 10:35:40 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Досье/КРВ в группе персон/Выгрузки]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41932</key>
+                    <summary><![CDATA[Выгрузка статистики КРВ по группе в CSV]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Выгрузка в csv: проверка названий приложений и категорий]]></name>
+            <objective><![CDATA[<a data-issue-key="DOZOR-41932" href="https://jira.solarsecurity.ru/browse/DOZOR-41932" rel="154784">DOZOR-41932</a> Выгрузка статистики КРВ по группе в CSV<br/><a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=61541304</a> ]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[Дозор с лицензией UBA и Ролью "контроль рабочего времени"<br/>синхронизован с АД isim<br/>для тестовой группы персон залиты данные по КРВ --- sftp://root@microball.solar.local/store/ftp/pub/dozor/test-data/for_tests_krv/<br/>для тестового администратора выданы полные права на Досье и зону КРВ]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>перейти на вкладку "КРВ" <br/>выбрать тестовый период]]></description>
+                        <expectedResult><![CDATA[проверить наличие функционала выгрузки в csv<br/>- в правом верхнем углу кнопка "Экспорт в csv"<br/><br/>при нажатии появляется календарь и возможные выгрузки в csv]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[выполнить выгрузки по приложениям]]></description>
+                        <expectedResult><![CDATA[запомнить названия приложений и категорий]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[переименовать приложения в справочнике <br/>повторить выгрузку]]></description>
+                        <expectedResult><![CDATA[проверить, что название приложений изменилось]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[переименовать категорию в справочнике<br/>повторить выгрузку]]></description>
+                        <expectedResult><![CDATA[проверить , что название категории изменилось]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[добавить неизвестный процесс в приложение (в справочнике) <br/>повторить выгрузку]]></description>
+                        <expectedResult><![CDATA[проверить ,что процесс привязан к приложению\категории]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[удалить приложение в справочнике<br/>повторить выгрузку]]></description>
+                        <expectedResult><![CDATA[проверить ,что процесс стал неизвестным]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-05-18 10:39:38 UTC</updatedOn>
+        </testCase>
+        <testCase id="11110" key="DOZOR-T4106">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Рудкин Александр</createdBy>
+            <createdOn>2020-07-24 09:22:32 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/права доступа]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-41641</key>
+                    <summary><![CDATA[КРВ. Досье. Настройки доступа к группам Досье]]></summary>
+                </issue>
+                <issue>
+                    <key>DOZOR-43229</key>
+                    <summary><![CDATA[УЗ имеет доступ к рабочим столам, без назначенных прав]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Есть доступ к разделу "КРВ", нет доступа к другим рабочим столам]]></name>
+            <objective><![CDATA[<a href="https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#">https://confluence.solarsecurity.ru/pages/viewpage.action?pageId=60850656#</a><br/>https://jira.solarsecurity.ru/browse/DOZOR-43231]]></objective>
+            <owner>rudkin@jet.msk.su</owner>
+            <precondition><![CDATA[стенд с лицензией UBA и данными для Контроля Рабочего времени]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[создать новую роль "КРВ"<br/>отметить чекбоксом доступ к разделу Контроля Рабочего времени.<br/>отметить чекбоксом доступ к Досье (полный)<br/>Не выдавать доступ к рабочим столам аналитика и руководителя<br/><br/>сохранить.<br/><br/>создать нового пользователя qa , выдать ему тестувую роль КРВ]]></description>
+                        <expectedResult><![CDATA[роль создана.<br/>пользователь создан]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[зайти тестовым пользователем в систему. <br/><br/>]]></description>
+                        <expectedResult><![CDATA[открывается Рабочий стол КРВ]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[проверить список доступных рабочих столов]]></description>
+                        <expectedResult><![CDATA[Убедиться, что доступен только рабочий стол КРВ]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[добавить в роль доступ к рабочему столу аналитика<br/>зайти тестовым пользователем в систему.<br/>проверить список доступных рабочих столов<br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что доступны только рабстол аналитика и КРВ]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[добавить в роль доступ к рабочему столу руководителя<br/>зайти тестовым пользователем в систему.<br/>проверить список доступных рабочих столов<br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что доступны все рабочие столы]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[убрать &nbsp;доступ к рабочему столу аналитика<br/>зайти тестовым пользователем в систему.<br/>проверить список доступных рабочих столов<br/><br/>]]></description>
+                        <expectedResult><![CDATA[Убедиться, что доступны только рабстол руководителя и КРВ]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Рудкин Александр</updatedBy>
+            <updatedOn>2020-07-24 09:41:26 UTC</updatedOn>
+        </testCase>
+        <testCase id="16949" key="DOZOR-T4635">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Терлецкий Андрей</createdBy>
+            <createdOn>2021-01-29 14:46:30 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Укладка данных от агентов]]></folder>
+            <issues/>
+            <labels/>
+            <name><![CDATA[Загрузка данных в таблицу activity_log_shard (clickhouse cluster)]]></name>
+            <objective><![CDATA[Проверка, что при работе с кластером Clickhouse запись данных КРВ ведется в таблицу activity_log_shard.<br/>При обычной дефолтной не кластерной инсталляции данные пишутся в activity_log]]></objective>
+            <owner>terletsky</owner>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Назначаем роли "Контроль рабочего времени" и "Сервер агентов". Для агента в настройках перехвата выставляем "Контроль рабочего времени". Ждем данных от агента. Проверяем таблицу activity_log:<br/><strong>clickhouse-client --port 9001<br/>use time_control;<br/>select count(*) from activity_log</strong>]]></description>
+                        <expectedResult><![CDATA[Данные пишутся в таблицу activity_log]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Меняем настройку конфигурации (не видна в интерфейсе):<br/><strong>echo "/agent-server/agent-server.edn/use-clickhouse-cluster: #t" | set-config global partial</strong><br/><br/><br/><br/>]]></description>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[В agent-server.edn меняем настройки подключения к Clickhouse на кластер (для тестирования использовался кластер имени Леонида).]]></description>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Ждем данных от агента, проверяем, что теперь запись ведется в таблицу&nbsp;<strong>activity_log_shard</strong><br/><br/><strong>use time_control;<br/>select count(*) from activity_log_shard</strong>]]></description>
+                    </step>
+                </steps>
+            </testScript>
+        </testCase>
+        <testCase id="18156" key="DOZOR-T4976">
+            <attachments/>
+            <confluencePageLinks/>
+            <createdBy>Нуртдинов Тимур Маратович</createdBy>
+            <createdOn>2021-04-02 13:34:00 UTC</createdOn>
+            <customFields/>
+            <folder><![CDATA[Контроль Рабочего Времени/Укладка данных от агентов]]></folder>
+            <issues>
+                <issue>
+                    <key>DOZOR-48111</key>
+                    <summary><![CDATA[TS КРВ: промежуточная агрегация данных]]></summary>
+                </issue>
+            </issues>
+            <labels/>
+            <name><![CDATA[Пересоздание агрегата КРВ за больший период]]></name>
+            <objective><![CDATA[https://jira.solarsecurity.ru/browse/DOZOR-48111<br/>По умолчанию при миграции на 7.3.4 -2 и 7.4 на рабочем столе КРВ данные будут отображаться только за 90 дней, для охвата большего диапазона данных, требуется ручное пересоздание агрегата<br/><br/>]]></objective>
+            <owner>JIRAUSER18723</owner>
+            <precondition><![CDATA[<strong>В КРВ загружены данные в текущий период 90 дней, а также есть данные в периоде 90-180 дней от даты первоначальной миграции.</strong>]]></precondition>
+            <priority><![CDATA[Normal]]></priority>
+            <status><![CDATA[Approved]]></status>
+            <parameters/>
+            <testScript type="steps">
+                <steps>
+                    <step index="0">
+                        <customFields/>
+                        <description><![CDATA[Открыть рабочий стол КРВ.<br/>Выбрать тестовый период с данными в пределах 90 дней.]]></description>
+                        <expectedResult><![CDATA[Тестовые данные присутствуют]]></expectedResult>
+                    </step>
+                    <step index="1">
+                        <customFields/>
+                        <description><![CDATA[Выбрать тестовый период&nbsp;с данными в периоде <strong>&nbsp;90-180 дней&nbsp;<strong>от даты первоначальной миграции.</strong></strong>]]></description>
+                        <expectedResult><![CDATA[Тестовые данные отсутствуют.]]></expectedResult>
+                    </step>
+                    <step index="2">
+                        <customFields/>
+                        <description><![CDATA[На ноде с кликхаусом, подключится к бд клика:<br/><pre>clickhouse-client --port 9001 -n </pre><br/>]]></description>
+                        <expectedResult><![CDATA[Подключение успешно]]></expectedResult>
+                    </step>
+                    <step index="3">
+                        <customFields/>
+                        <description><![CDATA[Выполнить команды:<ul><li><pre>SET max_partitions_per_insert_block = 1000; -Увеличиваем количество партиций для вставки, необходимого для первоначального заполнения агрегата
+
+ </pre><br/><br/></li><li><pre>DROP TABLE IF EXISTS time_control.activity_agg; - Удаление текущего агрегата
+
+</pre><br/><br/></li><li>CREATE MATERIALIZED VIEW time_control.activity_agg ENGINE = AggregatingMergeTree() PARTITION BY date ORDER BY (person_id, station_id, hostname, date, app_id, app_sub_category, app_category) POPULATE AS SELECT station_id, hostname, person_id, toDate(activity_log.date, timezone()) date, argMaxState(activity_log.groups, activity_log.date) groups, app_id, app_category, app_sub_category, minState(activity_log.date) start_date, argMaxState(activity_log.date + toUInt64(duration/1000), activity_log.date) end_date, sumState(activity_log.duration) sum_duration FROM time_control.activity_log WHERE toDate(activity_log.date) &gt; toDate(now()) - <strong><em><u>90</u></em></strong> GROUP BY person_id, station_id, hostname, toDate(activity_log.date, timezone()), app_id, app_sub_category, app_category; -<strong>&nbsp;где вместо <em><strong><u>90</u></strong></em> - ввести желаемое число дней охвата нового агрегата крв, к примеру - 180</strong></li></ul>]]></description>
+                        <expectedResult><![CDATA[Аггрегат данных крв создан.]]></expectedResult>
+                    </step>
+                    <step index="4">
+                        <customFields/>
+                        <description><![CDATA[Открыть рабочий стол КРВ.<br/>Выбрать тестовый период с данными в пределах 90 дней.]]></description>
+                        <expectedResult><![CDATA[Тестовые данные присутствуют]]></expectedResult>
+                    </step>
+                    <step index="5">
+                        <customFields/>
+                        <description><![CDATA[Выбрать тестовый период с данными в периоде <strong>&nbsp;90-180 дней&nbsp;</strong>.]]></description>
+                        <expectedResult><![CDATA[Тестовые данные появились, информация в графиках крв корректна и соответствует действительности]]></expectedResult>
+                    </step>
+                    <step index="6">
+                        <customFields/>
+                        <description><![CDATA[Открыть карточку тестовой группы Досье &nbsp;(с данными по КРВ)<br/>Перейти на вкладку "КРВ"<br/>Выбрать тестовый период с данными в пределах 90 дней.]]></description>
+                        <expectedResult><![CDATA[Тестовые данные присутствуют]]></expectedResult>
+                    </step>
+                    <step index="7">
+                        <customFields/>
+                        <description><![CDATA[Выбрать тестовый период с данными в периоде <strong>&nbsp;90-180 дней&nbsp;</strong>.]]></description>
+                        <expectedResult><![CDATA[Тестовые данные появились, информация в графиках крв корректна и соответствует действительности]]></expectedResult>
+                    </step>
+                </steps>
+            </testScript>
+            <updatedBy>Нуртдинов Тимур Маратович</updatedBy>
+            <updatedOn>2021-04-02 13:54:23 UTC</updatedOn>
+        </testCase>
+    </testCases>
+</project>
