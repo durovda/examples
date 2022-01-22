@@ -1,9 +1,10 @@
 class Command:
-    STOP = 1
-    STATUS_UP = 2
-    STATUS_DOWN = 3
-    GET_STATUS = 4
-    UNKNOWN = 5
+    STOP = 'стоп'
+    STATUS_UP = 'повысить статус пациента'
+    STATUS_DOWN = 'понизить статус пациента'
+    GET_STATUS = 'узнать статус пациента'
+    CALCULATE_STATISTICS = 'рассчитать статистику'
+    UNKNOWN = 'неизвестная команда'
 
 
 class Application:
@@ -25,6 +26,8 @@ class Application:
             elif command == Command.STATUS_DOWN:
                 patient_id = self._get_patient_id_from_input_stream()
                 self._cmd_status_down(patient_id)
+            elif command == Command.CALCULATE_STATISTICS:
+                self._cmd_calculate_statistics()
             elif command == Command.STOP:
                 self._cmd_stop()
                 stop = True
@@ -41,6 +44,8 @@ class Application:
             return Command.STATUS_UP
         elif command_as_text == 'понизить статус пациента':
             return Command.STATUS_DOWN
+        elif command_as_text == 'рассчитать статистику':
+            return Command.CALCULATE_STATISTICS
         else:
             return Command.UNKNOWN
 
@@ -48,11 +53,7 @@ class Application:
         return int(self._input_stream.get_message('Введите ID пациента: '))
 
     def _cmd_stop(self):
-        text = 'Сеанс завершён.\nСтатистика на конец сеанса:'
-        statistics = self._hospital.get_statistics()
-        for status in statistics:
-            text += f'\n - в статусе "{status}": {statistics[status]} чел.'
-        self._output_stream.send_message(text)
+        self._output_stream.send_message('Сеанс завершён.')
 
     def _cmd_get_status(self, patient_id):
         patient_status = self._hospital.get_patient_status_by_id(patient_id)
@@ -67,3 +68,10 @@ class Application:
         self._hospital.patient_status_down(patient_id)
         new_status = self._hospital.get_patient_status_by_id(patient_id)
         self._output_stream.send_message(f'Новый статус пациента: "{new_status}"')
+
+    def _cmd_calculate_statistics(self):
+        text = 'Статистика по статусам:'
+        statistics = self._hospital.get_statistics()
+        for status in statistics:
+            text += f'\n - в статусе "{status}": {statistics[status]} чел.'
+        self._output_stream.send_message(text)

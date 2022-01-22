@@ -3,8 +3,7 @@
 class Hospital:
     def __init__(self, patients_db):
         self._patients_db = patients_db
-        self._statuses_db = {0: "Тяжело болен", 1: "Болен", 2: "Слегка болен",
-                             3: "Близок к выздоровлению", 4: "Готов к выписке"}
+        self._statuses_db = {0: "Тяжело болен", 1: "Болен", 2: "Слегка болен", 3: "Готов к выписке"}
 
     def get_patient_status_by_id(self, patient_id):
         patient_index = patient_id - 1

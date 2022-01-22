@@ -24,6 +24,11 @@ def test_get_cmd_status_down():
     assert app._get_command_from_input_stream() == Command.STATUS_DOWN
 
 
+def test_get_cmd_calculate_statistics():
+    app = Application(input_stream=MockInputStream(['рассчитать статистику']))
+    assert app._get_command_from_input_stream() == Command.CALCULATE_STATISTICS
+
+
 def test_get_patient_id_from_input_stream():
     app = Application(input_stream=MockInputStream(['2']))
     assert app._get_patient_id_from_input_stream() == 2
@@ -31,9 +36,7 @@ def test_get_patient_id_from_input_stream():
 
 def test_cmd_stop():
     hospital = Hospital([1, 1])
-    expected_output_messages = ['Сеанс завершён.' +
-                                '\nСтатистика на конец сеанса:' +
-                                '\n - в статусе "Болен": 2 чел.']
+    expected_output_messages = ['Сеанс завершён.']
     output_stream = MockOutputStream()
     app = Application(hospital=hospital,
                       output_stream=output_stream)
@@ -57,12 +60,25 @@ def test_cmd_get_status():
 
 def test_cmd_status_up():
     hospital = Hospital([1, 1, 2])
-    expected_output_messages = ['Новый статус пациента: "Близок к выздоровлению"']
+    expected_output_messages = ['Новый статус пациента: "Готов к выписке"']
     output_stream = MockOutputStream()
     app = Application(hospital=hospital,
                       output_stream=output_stream)
 
     app._cmd_status_up(patient_id=3)
+
+    assert_lists_equal(output_stream.messages, expected_output_messages)
+
+
+def test_cmd_calculate_statistics():
+    hospital = Hospital([1, 1])
+    expected_output_messages = ['Статистика по статусам:' +
+                                '\n - в статусе "Болен": 2 чел.']
+    output_stream = MockOutputStream()
+    app = Application(hospital=hospital,
+                      output_stream=output_stream)
+
+    app._cmd_calculate_statistics()
 
     assert_lists_equal(output_stream.messages, expected_output_messages)
 

@@ -17,12 +17,13 @@ def test_full_positive_case():
     input_messages.append('понизить статус пациента')
     input_messages.append('3')
     expected_output_messages.append('Новый статус пациента: "Тяжело болен"')
-    input_messages.append('стоп')
-    expected_output_messages.append('Сеанс завершён.' +
-                                    '\nСтатистика на конец сеанса:' +
+    input_messages.append('рассчитать статистику')
+    expected_output_messages.append('Статистика по статусам:' +
                                     '\n - в статусе "Тяжело болен": 1 чел.' +
                                     '\n - в статусе "Болен": 2 чел.' +
                                     '\n - в статусе "Слегка болен": 1 чел.')
+    input_messages.append('стоп')
+    expected_output_messages.append('Сеанс завершён.')
     output_stream = MockOutputStream()
     app = Application(hospital=hospital,
                       input_stream=MockInputStream(input_messages),
@@ -40,9 +41,7 @@ def test_unknown_command():
     input_messages.append('сделай что-нибудь...')
     expected_output_messages.append('Неизвестная команда! Попробуйте ещё раз')
     input_messages.append('стоп')
-    expected_output_messages.append('Сеанс завершён.' +
-                                    '\nСтатистика на конец сеанса:' +
-                                    '\n - в статусе "Болен": 2 чел.')
+    expected_output_messages.append('Сеанс завершён.')
     output_stream = MockOutputStream()
     app = Application(hospital=hospital,
                       input_stream=MockInputStream(input_messages),
