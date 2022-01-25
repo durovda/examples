@@ -24,38 +24,47 @@ def test_parse_text_to_command(tpl):
 
 
 def test_get_command_from_input_stream():
-    app = Application(input_stream=MockInputStream(['стоп']))
+    app = Application(input_stream=MockInputStream())
+    app._input_stream.input = lambda x: 'стоп'
     assert app._get_command_from_input_stream() == Command.STOP
 
 
 def test_get_patient_id_from_input_stream():
-    app = Application(input_stream=MockInputStream(['2']))
+    app = Application(input_stream=MockInputStream())
+    app._input_stream.input = lambda x: '2'
     assert app._get_patient_id_from_input_stream() == 2
 
 
 def test_get_patient_discharge_confirmation_from_input_stream():
-    input_messages = ['да']
-    app = Application(input_stream=MockInputStream(input_messages))
+    app = Application(input_stream=MockInputStream())
+    app._input_stream.input = lambda x: 'да'
     assert app._get_patient_discharge_confirmation_from_input_stream()
 
 
 def test_get_patient_discharge_not_confirmation_from_input_stream():
-    input_messages = ['нет']
-    app = Application(input_stream=MockInputStream(input_messages))
+    app = Application(input_stream=MockInputStream())
+    app._input_stream.input = lambda x: 'нет'
     assert not app._get_patient_discharge_confirmation_from_input_stream()
 
 
-def test_patient_id_is_not_integer():
-    input_messages = ['два']
-    app = Application(input_stream=MockInputStream(input_messages))
+def test_patient_id_is_not_integer_error():
+    app = Application(input_stream=MockInputStream())
+    app._input_stream.input = lambda x: 'два'
     with pytest.raises(IdNotIntegerError) as err:
         app._get_patient_id_from_input_stream()
     assert str(err.value) == 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
 
 
 def test_send_message_to_output_stream():
-    expected_output_messages = ['Сообщение, посылаемое в output_stream']
     output_stream = MockOutputStream()
+    output_stream.add_expected_message('Сообщение, посылаемое в output_stream')
     app = Application(output_stream=output_stream)
     app._send_message_to_output_stream('Сообщение, посылаемое в output_stream')
-    assert_lists_equal(output_stream.messages, expected_output_messages)
+
+
+def test_send_invalid_message_to_output_stream():
+    output_stream = MockOutputStream()
+    output_stream.add_expected_message('Сообщение, посылаемое в output_stream')
+    app = Application(output_stream=output_stream)
+    with pytest.raises(AssertionError) as err:
+        app._send_message_to_output_stream('Некорректное сообщение')

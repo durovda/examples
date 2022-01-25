@@ -1,3 +1,4 @@
+from tdd_trening.hospital_dda.exceptions import MinStatusCannotDownError
 
 
 class Hospital:
@@ -18,6 +19,8 @@ class Hospital:
     def patient_status_down(self, patient_id):
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
+        if status_code == 0:
+            raise MinStatusCannotDownError('Ошибка. Нельзя понизить самый низкий статус (наши пациенты не умирают)')
         self._patients_db[patient_index] = status_code - 1
 
     def get_statistics(self):

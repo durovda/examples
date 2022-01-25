@@ -1,4 +1,4 @@
-from tdd_trening.hospital_dda.exceptions import IdNotIntegerError
+from tdd_trening.hospital_dda.exceptions import IdNotIntegerError, MinStatusCannotDownError
 
 
 class Command:
@@ -66,29 +66,37 @@ class Application:
             return str(err)
 
     def _cmd_status_up(self):
-        patient_id = self._get_patient_id_from_input_stream()
-        status = self._hospital.get_patient_status_by_id(patient_id)
-        if status == 'Готов к выписке':
-            discharge_confirmation = self._get_patient_discharge_confirmation_from_input_stream()
-            if discharge_confirmation:
-                self._hospital.discharge_patient(patient_id)
-                result_message = 'Пациент выписан из больницы'
-                return result_message
+        try:
+            patient_id = self._get_patient_id_from_input_stream()
+            status = self._hospital.get_patient_status_by_id(patient_id)
+            if status == 'Готов к выписке':
+                discharge_confirmation = self._get_patient_discharge_confirmation_from_input_stream()
+                if discharge_confirmation:
+                    self._hospital.discharge_patient(patient_id)
+                    result_message = 'Пациент выписан из больницы'
+                    return result_message
+                else:
+                    result_message = 'Пациент остался в статусе "Готов к выписке"'
+                    return result_message
             else:
-                result_message = 'Пациент остался в статусе "Готов к выписке"'
+                self._hospital.patient_status_up(patient_id)
+                new_status = self._hospital.get_patient_status_by_id(patient_id)
+                result_message = f'Новый статус пациента: "{new_status}"'
                 return result_message
-        else:
-            self._hospital.patient_status_up(patient_id)
+        except IdNotIntegerError as err:
+            return 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
+
+    def _cmd_status_down(self):
+        try:
+            patient_id = self._get_patient_id_from_input_stream()
+            self._hospital.patient_status_down(patient_id)
             new_status = self._hospital.get_patient_status_by_id(patient_id)
             result_message = f'Новый статус пациента: "{new_status}"'
             return result_message
-
-    def _cmd_status_down(self):
-        patient_id = self._get_patient_id_from_input_stream()
-        self._hospital.patient_status_down(patient_id)
-        new_status = self._hospital.get_patient_status_by_id(patient_id)
-        result_message = f'Новый статус пациента: "{new_status}"'
-        return result_message
+        except IdNotIntegerError as err:
+            return 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
+        except MinStatusCannotDownError as err:
+            return 'Ошибка. Нельзя понизить самый низкий статус (наши пациенты не умирают)'
 
     def _cmd_calculate_statistics(self):
         result_message = 'Статистика по статусам:'
