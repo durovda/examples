@@ -1,32 +1,31 @@
+import pytest
+
 from tdd_trening.hospital_dda.application import Application, Command
-from tdd_trening.hospital_dda.hospital import Hospital
+from tdd_trening.hospital_dda.exceptions import IdNotIntegerError
 from tdd_trening.hospital_dda.mocks import MockInputStream, MockOutputStream
 from tdd_trening.hospital_dda.spesial_asserts import assert_lists_equal
 
+fixture_for_parser = [('стоп', Command.STOP),
+                      ('Стоп', Command.STOP),
+                      ('stop', Command.STOP),
+                      ('STOP', Command.STOP),
+                      ('остановите программу!', Command.UNKNOWN),
+                      ('узнать статус пациента', Command.GET_STATUS),
+                      ('повысить статус пациента', Command.STATUS_UP),
+                      ('понизить статус пациента', Command.STATUS_DOWN),
+                      ('рассчитать статистику', Command.CALCULATE_STATISTICS)
+                      ]
 
-def test_get_cmd_stop():
+
+@pytest.mark.parametrize('tpl', fixture_for_parser)
+def test_parse_text_to_command(tpl):
+    app = Application()
+    assert app._parse_text_to_command(tpl[0]) == tpl[1]
+
+
+def test_get_command_from_input_stream():
     app = Application(input_stream=MockInputStream(['стоп']))
     assert app._get_command_from_input_stream() == Command.STOP
-
-
-def test_get_cmd_get_status():
-    app = Application(input_stream=MockInputStream(['узнать статус пациента']))
-    assert app._get_command_from_input_stream() == Command.GET_STATUS
-
-
-def test_get_cmd_status_up():
-    app = Application(input_stream=MockInputStream(['повысить статус пациента']))
-    assert app._get_command_from_input_stream() == Command.STATUS_UP
-
-
-def test_get_cmd_status_down():
-    app = Application(input_stream=MockInputStream(['понизить статус пациента']))
-    assert app._get_command_from_input_stream() == Command.STATUS_DOWN
-
-
-def test_get_cmd_calculate_statistics():
-    app = Application(input_stream=MockInputStream(['рассчитать статистику']))
-    assert app._get_command_from_input_stream() == Command.CALCULATE_STATISTICS
 
 
 def test_get_patient_id_from_input_stream():
@@ -34,62 +33,29 @@ def test_get_patient_id_from_input_stream():
     assert app._get_patient_id_from_input_stream() == 2
 
 
-def test_cmd_stop():
-    hospital = Hospital([1, 1])
-    expected_output_messages = ['Сеанс завершён.']
+def test_get_patient_discharge_confirmation_from_input_stream():
+    input_messages = ['да']
+    app = Application(input_stream=MockInputStream(input_messages))
+    assert app._get_patient_discharge_confirmation_from_input_stream()
+
+
+def test_get_patient_discharge_not_confirmation_from_input_stream():
+    input_messages = ['нет']
+    app = Application(input_stream=MockInputStream(input_messages))
+    assert not app._get_patient_discharge_confirmation_from_input_stream()
+
+
+def test_patient_id_is_not_integer():
+    input_messages = ['два']
+    app = Application(input_stream=MockInputStream(input_messages))
+    with pytest.raises(IdNotIntegerError) as err:
+        app._get_patient_id_from_input_stream()
+    assert str(err.value) == 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
+
+
+def test_send_message_to_output_stream():
+    expected_output_messages = ['Сообщение, посылаемое в output_stream']
     output_stream = MockOutputStream()
-    app = Application(hospital=hospital,
-                      output_stream=output_stream)
-
-    app._cmd_stop()
-
-    assert_lists_equal(output_stream.messages, expected_output_messages)
-
-
-def test_cmd_get_status():
-    hospital = Hospital([1, 1, 2])
-    expected_output_messages = ['Статус пациента: "Слегка болен"']
-    output_stream = MockOutputStream()
-    app = Application(hospital=hospital,
-                      output_stream=output_stream)
-
-    app._cmd_get_status(patient_id=3)
-
-    assert_lists_equal(output_stream.messages, expected_output_messages)
-
-
-def test_cmd_status_up():
-    hospital = Hospital([1, 1, 2])
-    expected_output_messages = ['Новый статус пациента: "Готов к выписке"']
-    output_stream = MockOutputStream()
-    app = Application(hospital=hospital,
-                      output_stream=output_stream)
-
-    app._cmd_status_up(patient_id=3)
-
-    assert_lists_equal(output_stream.messages, expected_output_messages)
-
-
-def test_cmd_calculate_statistics():
-    hospital = Hospital([1, 1])
-    expected_output_messages = ['Статистика по статусам:' +
-                                '\n - в статусе "Болен": 2 чел.']
-    output_stream = MockOutputStream()
-    app = Application(hospital=hospital,
-                      output_stream=output_stream)
-
-    app._cmd_calculate_statistics()
-
-    assert_lists_equal(output_stream.messages, expected_output_messages)
-
-
-def test_cmd_status_down():
-    hospital = Hospital([1, 3, 1])
-    expected_output_messages = ['Новый статус пациента: "Слегка болен"']
-    output_stream = MockOutputStream()
-    app = Application(hospital=hospital,
-                      output_stream=output_stream)
-
-    app._cmd_status_down(patient_id=2)
-
+    app = Application(output_stream=output_stream)
+    app._send_message_to_output_stream('Сообщение, посылаемое в output_stream')
     assert_lists_equal(output_stream.messages, expected_output_messages)

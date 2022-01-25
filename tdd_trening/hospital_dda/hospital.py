@@ -30,3 +30,7 @@ class Hospital:
             if count > 0:
                 statistics[self._statuses_db[status_code]] = count
         return statistics
+
+    def discharge_patient(self, patient_id):
+        patient_index = patient_id - 1
+        self._patients_db.pop(patient_index)

@@ -12,6 +12,12 @@ def test_patient_status_up():
     assert hospital._patients_db == [1, 2, 1]
 
 
+def test_discharge_patient():
+    hospital = Hospital([1, 3, 1])
+    hospital.discharge_patient(2)
+    assert hospital._patients_db == [1, 1]
+
+
 def test_get_statistics():
     hospital = Hospital([2, 1, 1, 1, 2])
     assert hospital.get_statistics() == {"Болен": 3, "Слегка болен": 2}

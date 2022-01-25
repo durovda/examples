@@ -2,9 +2,9 @@
 
 class Console:
     @staticmethod
-    def get_message(question):
+    def input(question):
         return input(question)
 
     @staticmethod
-    def send_message(message):
+    def print(message):
         print(message)
