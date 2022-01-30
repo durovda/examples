@@ -1,5 +1,5 @@
 import pytest
-from model.db import HospitalListDB, NonExistentPatientIdException
+from model.db import HospitalListDB
 
 
 @pytest.fixture(scope="function")
@@ -35,6 +35,5 @@ def test_delete_patient(db_for_tests):
     patient_index = 9
     db_for_tests.delete_patient(patient_index)
     len_after = len(db_for_tests.db)
-    with pytest.raises(NonExistentPatientIdException):
-        db_for_tests.get_patient_status_by_index(patient_index)
+    assert not db_for_tests.get_patient_status_by_index(patient_index)
     assert len_before - 1 == len_after

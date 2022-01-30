@@ -2,10 +2,15 @@ from tdd_trening.hospital_dda.application import Application
 from tdd_trening.hospital_dda.exceptions import IdNotIntegerError, MinStatusCannotDownError
 from tdd_trening.hospital_dda.hospital import Hospital
 from tdd_trening.hospital_dda.spesial_asserts import assert_lists_equal
+from tdd_trening.hospital_dda_01.exceptions import PatientNotExistsError
 
 
 def raise_id_not_integer_error():
     raise IdNotIntegerError('Ошибка ввода. ID пациента должно быть числом (целым, положительным)')
+
+
+def raise_patient_not_exists_error():
+    raise PatientNotExistsError('Ошибка. В больнице нет пациента с таким ID')
 
 
 def raise_min_status_cannot_down_error():
@@ -25,11 +30,18 @@ def test_cmd_get_status():
     assert result_message == 'Статус пациента: "Слегка болен"'
 
 
-def test_cmd_get_status_when_patient_id_is_not_integer():
-    app = Application(hospital=Hospital([1, 1]))
+def test_cmd_get_status_when_patient_id_not_integer():
+    app = Application()
     app._get_patient_id_from_input_stream = lambda: raise_id_not_integer_error()
     result_message = app._cmd_get_status()
     assert result_message == 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
+
+
+def test_cmd_get_status_when_patient_not_exists():
+    app = Application(hospital=Hospital([1]))
+    app._get_patient_id_from_input_stream = lambda: 2
+    result_message = app._cmd_get_status()
+    assert result_message == 'Ошибка. В больнице нет пациента с таким ID'
 
 
 def test_cmd_status_up():
@@ -40,12 +52,19 @@ def test_cmd_status_up():
     assert result_message == 'Новый статус пациента: "Готов к выписке"'
 
 
-def test_cmd_status_up_when_patient_id_is_not_integer_error():
+def test_cmd_status_up_when_patient_id_not_integer_error():
     app = Application(hospital=Hospital([1, 1]))
     app._get_patient_id_from_input_stream = lambda: raise_id_not_integer_error()
     result_message = app._cmd_status_up()
     assert_lists_equal(app._hospital._patients_db, [1, 1])
     assert result_message == 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
+
+
+def test_cmd_status_up_when_patient_not_exists():
+    app = Application(hospital=Hospital([1]))
+    app._get_patient_id_from_input_stream = lambda: 2
+    result_message = app._cmd_status_up()
+    assert result_message == 'Ошибка. В больнице нет пациента с таким ID'
 
 
 def test_cmd_status_up_when_patient_discharge():
@@ -74,7 +93,14 @@ def test_cmd_status_down():
     assert result_message == 'Новый статус пациента: "Слегка болен"'
 
 
-def test_cmd_status_down_when_patient_id_is_not_integer_error():
+def test_cmd_status_down_when_patient_not_exists():
+    app = Application(hospital=Hospital([1]))
+    app._get_patient_id_from_input_stream = lambda: 2
+    result_message = app._cmd_status_down()
+    assert result_message == 'Ошибка. В больнице нет пациента с таким ID'
+
+
+def test_cmd_status_down_when_patient_id_not_integer_error():
     app = Application(hospital=Hospital([1, 1]))
     app._get_patient_id_from_input_stream = lambda: raise_id_not_integer_error()
     result_message = app._cmd_status_down()

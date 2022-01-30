@@ -1,5 +1,5 @@
-from model.db import HospitalListDB
-from model.application import Application
+from app.db import HospitalListDB
+from app.hostpital import Application
 
 if __name__ == '__main__':
     statuses = {

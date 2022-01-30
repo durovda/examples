@@ -1,5 +1,5 @@
 
-class IdNotIntegerError(TypeError):
+class IdNotIntegerError(Exception):
     pass
 
 

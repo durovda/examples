@@ -1,6 +1,6 @@
 import pytest
-from model.application import Application
-from model.db import HospitalListDB
+from app.hostpital import Application
+from app.db import HospitalListDB
 
 
 def extended_fake_inputs(inputs_chain):
@@ -28,7 +28,7 @@ def save_print_chain(prints_chain):
 
 
 @pytest.fixture(scope="function")
-def prepared_app():
+def prepared_app_with_db():
     statuses = {
         0: 'Тяжело болен',
         1: 'Болен',
@@ -54,7 +54,7 @@ def get_inputs_and_expected_outputs(input_output_list):
     return user_inputs, expected_outputs
 
 
-def test_get_patient_status(prepared_app):
+def test_get_patient_status(prepared_app_with_db):
     user_inputs, expected_outputs = get_inputs_and_expected_outputs([
         {
             'input':  ['узнать статус пациента', 2],
@@ -62,7 +62,7 @@ def test_get_patient_status(prepared_app):
         },
         {
             'input':  ['узнать статус пациента', 140],
-            'output': ['Пациент с индексом 140 не найден']
+            'output': ['Пациент с указанным индексом отсутствует']
         },
         {
             'input':  ['стоп'],
@@ -70,16 +70,16 @@ def test_get_patient_status(prepared_app):
         },
     ])
     apps_outputs = []
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(apps_outputs)
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(apps_outputs)
 
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db.start_dialog_with_user()
 
     assert expected_outputs == apps_outputs
 
 
-def test_raise_patient_status(prepared_app):
-    prepared_app.db_interface.db = [1, 2, 1]
+def test_raise_patient_status(prepared_app_with_db):
+    prepared_app_with_db.db.db = [1, 2, 1]
     patient_id = 2
     max_status_alert = 'У этого пациента самый высокий статус "Готов к выписке".\n' \
                        'Желаете ли выписать этого пациента?'
@@ -99,11 +99,11 @@ def test_raise_patient_status(prepared_app):
         },
         {
             'input':  ['повысить статус пациента', patient_id, 'нет'],
-            'output': [max_status_alert, 'Пациент остался в статусе "Готов к выписке"']
+            'output': [max_status_alert]
         },
         {
             'input':  ['повысить статус пациента', patient_id, 'да'],
-            'output': [max_status_alert, f'Пациент с ID={patient_id} выписан.']
+            'output': [max_status_alert]
         },
         {
             'input':  ['стоп'],
@@ -112,22 +112,22 @@ def test_raise_patient_status(prepared_app):
     ])
 
     prints_chain = []
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(prints_chain)
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(prints_chain)
 
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db.start_dialog_with_user()
 
     expected_patient_db = [1, 1]
     assert expected_outputs == prints_chain
-    assert prepared_app.db_interface.db == expected_patient_db
+    assert prepared_app_with_db.db.db == expected_patient_db
 
 
-def test_reduce_patient_status(prepared_app):
+def test_reduce_patient_status(prepared_app_with_db):
     min_status_text = 'У этого пациента самый низкий статус ' \
-                      f'"{prepared_app.statuses[prepared_app.min_status]}".\n' \
+                      f'"{prepared_app_with_db.statuses[prepared_app_with_db.min_status]}".\n' \
                       'Статус пациента не изменился, т.к. в нашей больнице ' \
                       'пациенты не умирают!\n'
-    prepared_app.db_interface.db = [1, 1, 1]
+    prepared_app_with_db.db.db = [1, 1, 1]
 
     user_inputs, expected_outputs = get_inputs_and_expected_outputs([
         {
@@ -153,24 +153,24 @@ def test_reduce_patient_status(prepared_app):
 
     ])
     prints_chain = []
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(prints_chain)
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(prints_chain)
 
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db.start_dialog_with_user()
 
     assert expected_outputs == prints_chain
-    assert prepared_app.db_interface.db == [1, 0, 1]
+    assert prepared_app_with_db.db.db == [1, 0, 1]
 
 
-def test_print_statistics_by_patients_groups(prepared_app):
-    prepared_app.db_interface.db = [
+def test_print_statistics_by_patients_groups(prepared_app_with_db):
+    prepared_app_with_db.db.db = [
         0,
         1, 1, 1, 1,
         2, 2, 2,
         3, 3,
     ]
     prints_chain = []
-    statistics_text = '''В больнице на данный момент находится 10 пациентов, из них:
+    statistics_text = '''В больнице на данный момент находится 10, из них:
  - в статусе "Тяжело болен": 1 чел.
  - в статусе "Болен": 4 чел.
  - в статусе "Слегка болен": 3 чел.
@@ -186,14 +186,14 @@ def test_print_statistics_by_patients_groups(prepared_app):
             'output': ['Сеанс завершён.']
         }
     ])
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(prints_chain)
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(prints_chain)
+    prepared_app_with_db.start_dialog_with_user()
 
     assert expected_outputs == prints_chain
 
 
-def test_unknown_command(prepared_app):
+def test_unknown_command(prepared_app_with_db):
     user_inputs, expected_outputs = get_inputs_and_expected_outputs([
         {
             'input':  ['йцукен'],
@@ -205,14 +205,14 @@ def test_unknown_command(prepared_app):
         }
     ])
     prints_chain = []
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(prints_chain)
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(prints_chain)
 
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db.start_dialog_with_user()
     assert expected_outputs == prints_chain
 
 
-def test_command_match(prepared_app):
+def test_command_match(prepared_app_with_db):
     user_inputs, expected_outputs = get_inputs_and_expected_outputs([
         {
             'input':  ['йцукен'],
@@ -224,8 +224,8 @@ def test_command_match(prepared_app):
         }
     ])
     prints_chain = []
-    prepared_app._input_method = extended_fake_inputs(user_inputs)
-    prepared_app._print_method = save_print_chain(prints_chain)
+    prepared_app_with_db._input_method = extended_fake_inputs(user_inputs)
+    prepared_app_with_db._print_method = save_print_chain(prints_chain)
 
-    prepared_app.start_dialog_with_user()
+    prepared_app_with_db.start_dialog_with_user()
     assert expected_outputs == prints_chain

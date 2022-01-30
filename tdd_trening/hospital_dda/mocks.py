@@ -48,7 +48,8 @@ class MockOutputStream:
 
     def print(self, message):
         current_expected_message = self._expected_messages.get()
-        assert message == current_expected_message
+        assert message == current_expected_message, f'\nactual_message = "{message}"' \
+                                                    f'\nexpected_message = "{current_expected_message}"'
 
     def add_expected_message(self, expected_message):
         self._expected_messages.add(expected_message)

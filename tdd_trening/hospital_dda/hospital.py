@@ -1,4 +1,5 @@
 from tdd_trening.hospital_dda.exceptions import MinStatusCannotDownError
+from tdd_trening.hospital_dda_01.exceptions import PatientNotExistsError
 
 
 class Hospital:
@@ -7,16 +8,19 @@ class Hospital:
         self._statuses_db = {0: "Тяжело болен", 1: "Болен", 2: "Слегка болен", 3: "Готов к выписке"}
 
     def get_patient_status_by_id(self, patient_id):
+        self._verify_patient_exists(patient_id)
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
         return self._statuses_db[status_code]
 
     def patient_status_up(self, patient_id):
+        self._verify_patient_exists(patient_id)
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
         self._patients_db[patient_index] = status_code + 1
 
     def patient_status_down(self, patient_id):
+        self._verify_patient_exists(patient_id)
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
         if status_code == 0:
@@ -35,5 +39,13 @@ class Hospital:
         return statistics
 
     def discharge_patient(self, patient_id):
+        self._verify_patient_exists(patient_id)
         patient_index = patient_id - 1
         self._patients_db.pop(patient_index)
+
+    def patient_exists(self, patient_id):
+        return patient_id <= len(self._patients_db)
+
+    def _verify_patient_exists(self, patient_id):
+        if not self.patient_exists(patient_id):
+            raise PatientNotExistsError('Ошибка. В больнице нет пациента с таким ID')

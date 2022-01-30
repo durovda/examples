@@ -6,4 +6,4 @@ if __name__ == "__main__":
     print(message)
 
     output_stream = Console()
-    output_stream.send_message('Статус пациента: "Болен"')
+    output_stream.print('Статус пациента: "Болен"')
