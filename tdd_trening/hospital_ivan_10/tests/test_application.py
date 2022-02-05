@@ -62,7 +62,8 @@ def test_answer_yes(prepared_app):
 def test_answer_nonsense(prepared_app):
     prepared_app._input_method = lambda x: 'asdfasdf'
     with pytest.raises(YesOrNoError):
-        prepared_app._request_confirmation_about_discharge_from_hostpital()
+        prepared_app\
+            ._request_confirmation_about_discharge_from_hostpital()
 
 
 def test_answer_no(prepared_app):

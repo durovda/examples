@@ -1,4 +1,4 @@
-from model.db import NonExistentPatientIdError, HospitalListDB
+from model.db import NonExistentPatientIdError, MaxStatusExceedError
 
 
 class NotIntegerError(Exception):
@@ -18,7 +18,7 @@ class Application:
                 2: 'Слегка болен',
                 3: 'Готов к выписке',
             }
-        self.db_interface: HospitalListDB = db
+        self.db_interface = db
         self.statuses = statuses
         self.min_status = min(self.statuses.keys())
         self.max_status = max(self.statuses.keys())
@@ -32,20 +32,10 @@ class Application:
         """ Повысить статус пациента """
         try:
             index = self._request_for_index()
-            user_status = self.db_interface.get_patient_status_by_index(index)
-            new_user_status = user_status + 1
-
-            if new_user_status < len(self.statuses):
-                self.db_interface.raise_patient_status(index)
-                return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
-            else:
-                confirmation_about_discharge_from_hospital = \
-                    self._request_confirmation_about_discharge_from_hostpital()
-                if not confirmation_about_discharge_from_hospital:
-                    return f'Пациент остался в статусе "{self.statuses[new_user_status - 1]}"'
-                else:
-                    self.db_interface.delete_patient(index)
-                    return f'Пациент с ID={index + 1} выписан.'
+            result = self.db_interface.raise_patient_status(
+                index,
+                self._request_confirmation_about_discharge_from_hostpital)
+            return result
 
         except (NonExistentPatientIdError, NotIntegerError) as err:
             return str(err)
@@ -83,7 +73,7 @@ class Application:
                 self._print_method('Неизвестная команда! Попробуйте ещё раз')
 
     def _match_command(self, command_as_text):
-        command_as_text = str(command_as_text).lower()
+        command_as_text = command_as_text.lower()
         if command_as_text in ['стоп', 'stop']:
             return self._cmd_stop_dialog
         elif command_as_text in ['рассчитать статистику', 'calc stat']:

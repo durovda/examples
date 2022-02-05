@@ -23,20 +23,20 @@ def test_try_update_patient_status_below_minimum(db_for_tests):
     new_status = -1
     patient_index = 1
     with pytest.raises(MinStatusExceedError):
-        db_for_tests._update_patient_status(patient_index, new_status)
+        db_for_tests.update_patient_status(patient_index, new_status)
 
 
 def test_try_update_patient_status_above_maximum(db_for_tests):
     new_status = 4
     patient_index = 1
     with pytest.raises(MaxStatusExceedError):
-        db_for_tests._update_patient_status(patient_index, new_status)
+        db_for_tests.update_patient_status(patient_index, new_status)
 
 
 def test_update_patient_status(db_for_tests):
     new_status = 3
     patient_index = 1
-    db_for_tests._update_patient_status(patient_index, new_status)
+    db_for_tests.update_patient_status(patient_index, new_status)
     assert db_for_tests.db[patient_index] == new_status
 
 

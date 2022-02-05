@@ -15,19 +15,6 @@ def extended_fake_inputs(inputs_chain):
     return inner
 
 
-def extended_fake_inputs_with_prompts_extraction(inputs_chain, prompts):
-    """
-    Элемены из inputs_chain по очереди отправляются при каждом
-    вызове _input_method класса Application
-    """
-    inputs_chain = inputs_chain[::-1]
-
-    def inner(text):
-        prompts.append(text)
-        return inputs_chain.pop()
-    return inner
-
-
 def save_print_chain(prints_chain):
     """
     В save_print_chain сохраняются элементы
@@ -67,19 +54,6 @@ def get_inputs_and_expected_outputs(input_output_list):
     return user_inputs, expected_outputs
 
 
-def get_prompts_inputs__and_expected_outputs(input_output_list):
-    user_inputs = []
-    prompts = []
-    expected_outputs = []
-    for ipt in input_output_list:
-        user_inputs += ipt['input']
-    for ipt in input_output_list:
-        expected_outputs += ipt['output']
-    for ipt in input_output_list:
-        prompts += ipt['prmpt']
-    return prompts, user_inputs, expected_outputs
-
-
 def test_get_patient_status(prepared_app):
     user_inputs, expected_outputs = get_inputs_and_expected_outputs([
         {
@@ -102,37 +76,6 @@ def test_get_patient_status(prepared_app):
     prepared_app.start_dialog_with_user()
 
     assert expected_outputs == apps_outputs
-
-
-def test_check_requests_responses(prepared_app):
-    expeted_prompts, user_inputs, expected_outputs = \
-        get_prompts_inputs__and_expected_outputs([
-        {
-            'input':  ['узнать статус пациента', 2],
-            'prmpt':  ['Введите команду: ', 'Введите индекс пациента: '],
-            'output': ['Болен']
-        },
-        {
-            'input': ['узнать статус пациента', 140],
-            'prmpt': ['Введите команду: ', 'Введите индекс пациента: '],
-            'output': ['Пациент с индексом 140 не найден']
-        },
-        {
-            'input':  ['стоп'],
-            'prmpt': ['Введите команду: '],
-            'output': ['Сеанс завершён.']
-        },
-    ])
-    actual_outputs = []
-    actual_prompts = []
-    prepared_app._input_method = \
-        extended_fake_inputs_with_prompts_extraction(user_inputs, actual_prompts)
-    prepared_app._print_method = save_print_chain(actual_outputs)
-
-    prepared_app.start_dialog_with_user()
-
-    assert expected_outputs == actual_outputs
-    assert expeted_prompts == actual_prompts
 
 
 def test_raise_patient_status(prepared_app):

@@ -1,13 +1,16 @@
 class NonExistentPatientIdError(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
 
 
 class MaxStatusExceedError(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
 
 
 class MinStatusExceedError(Exception):
-    pass
+    def __init__(self, message):
+        self.message = message
 
 
 class HospitalListDB:
@@ -24,6 +27,11 @@ class HospitalListDB:
         self.min_status = min(self.statuses.keys())
         self.max_status = max(self.statuses.keys())
 
+    def get_patients_count_by_status(self, status: int):
+        """ Получить число пациентов с определенным статусом """
+        return len(list(filter(
+            lambda patient_stat: patient_stat == status, self.db)))
+
     def get_total_patients_count(self):
         """ Получить общее число пациентов """
         return len(self.db)
@@ -36,14 +44,14 @@ class HospitalListDB:
             raise NonExistentPatientIdError(
                 f'Пациент с индексом {patient_index + 1} не найден')
 
-    def _update_patient_status(self, patient_index: int, new_status: int):
+    def update_patient_status(self, patient_index: int, new_status: int):
         """ Записать новый статус пациента """
         if new_status < self.min_status:
             raise MinStatusExceedError(
                 'Ошибка. Запрашиваемый статус ниже минимального!')
         elif new_status > self.max_status:
             raise MaxStatusExceedError(
-                'Ошибка. Запрашиваемый статус выше минимального!')
+                'Ошибка. Запрашиваемый статус ниже минимального!')
         else:
             self.db[patient_index] = new_status
 
@@ -54,35 +62,3 @@ class HospitalListDB:
         else:
             raise NonExistentPatientIdError(
                 f'Пациент с индексом {patient_index + 1} не найден')
-
-    def calc_patients_stat_by_groups(self):
-        """ Рассчитываем статистику по группам """
-        stat_with_zeros = {
-            k: self._get_patients_count_by_status(k)
-            for k in self.statuses.keys()
-        }
-        return {k: v for k, v in stat_with_zeros.items() if v != 0}
-
-    def raise_patient_status(self, patient_index):
-        raised_patient_status = \
-            self.get_patient_status_by_index(patient_index) + 1
-        self._update_patient_status(patient_index, raised_patient_status)
-
-    def reduce_patient_status(self, patient_index):
-        user_status = self.get_patient_status_by_index(patient_index)
-        new_user_status = user_status - 1
-        if new_user_status < self.min_status:
-            return (
-                'У этого пациента самый низкий статус '
-                f'"{self.statuses[self.min_status]}".\n'
-                'Статус пациента не изменился, т.к. в нашей больнице '
-                'пациенты не умирают!\n'
-            )
-        else:
-            self._update_patient_status(patient_index, new_user_status)
-            return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
-
-    def _get_patients_count_by_status(self, status: int):
-        """ Получить число пациентов с определенным статусом """
-        return len(list(filter(
-            lambda patient_stat: patient_stat == status, self.db)))

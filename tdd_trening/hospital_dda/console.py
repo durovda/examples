@@ -1,5 +1,3 @@
-
-
 class Console:
     @staticmethod
     def input(question):

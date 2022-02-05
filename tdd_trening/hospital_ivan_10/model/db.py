@@ -36,7 +36,7 @@ class HospitalListDB:
             raise NonExistentPatientIdError(
                 f'Пациент с индексом {patient_index + 1} не найден')
 
-    def _update_patient_status(self, patient_index: int, new_status: int):
+    def update_patient_status(self, patient_index: int, new_status: int):
         """ Записать новый статус пациента """
         if new_status < self.min_status:
             raise MinStatusExceedError(
@@ -63,10 +63,18 @@ class HospitalListDB:
         }
         return {k: v for k, v in stat_with_zeros.items() if v != 0}
 
-    def raise_patient_status(self, patient_index):
-        raised_patient_status = \
-            self.get_patient_status_by_index(patient_index) + 1
-        self._update_patient_status(patient_index, raised_patient_status)
+    def raise_patient_status(self, patient_index, confirmation_request_method):
+        user_status = self.get_patient_status_by_index(patient_index)
+        new_user_status = user_status + 1
+        if new_user_status < len(self.statuses):
+            self.update_patient_status(patient_index, new_user_status)
+            return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
+        else:
+            if not confirmation_request_method():
+                return f'Пациент остался в статусе "{self.statuses[new_user_status - 1]}"'
+            else:
+                self.delete_patient(patient_index)
+                return f'Пациент с ID={patient_index + 1} выписан.'
 
     def reduce_patient_status(self, patient_index):
         user_status = self.get_patient_status_by_index(patient_index)
@@ -79,7 +87,7 @@ class HospitalListDB:
                 'пациенты не умирают!\n'
             )
         else:
-            self._update_patient_status(patient_index, new_user_status)
+            self.update_patient_status(patient_index, new_user_status)
             return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
 
     def _get_patients_count_by_status(self, status: int):

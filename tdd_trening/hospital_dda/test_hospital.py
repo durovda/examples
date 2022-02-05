@@ -2,7 +2,7 @@ import pytest
 
 from tdd_trening.hospital_dda.exceptions import MinStatusCannotDownError
 from tdd_trening.hospital_dda.hospital import Hospital
-from tdd_trening.hospital_dda_01.exceptions import PatientNotExistsError
+from tdd_trening.hospital_dda.exceptions import PatientNotExistsError
 
 
 def test_get_patient_status():
