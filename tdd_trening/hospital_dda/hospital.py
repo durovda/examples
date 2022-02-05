@@ -1,4 +1,4 @@
-from tdd_trening.hospital_dda.exceptions import MinStatusCannotDownError
+from tdd_trening.hospital_dda.exceptions import MinStatusCannotDownError, MaxStatusCannotUpError
 from tdd_trening.hospital_dda.exceptions import PatientNotExistsError
 
 
@@ -15,16 +15,19 @@ class Hospital:
 
     def patient_status_up(self, patient_id):
         self._verify_patient_exists(patient_id)
+        if self.cannot_status_up_for_this_patient(patient_id):
+            raise MaxStatusCannotUpError('Ошибка. Нельзя повысить самый высокий статус. '
+                                         'Но этого пациента можно выписать')
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
         self._patients_db[patient_index] = status_code + 1
 
     def patient_status_down(self, patient_id):
         self._verify_patient_exists(patient_id)
+        if self.cannot_status_down_for_this_patient(patient_id):
+            raise MinStatusCannotDownError('Ошибка. Нельзя понизить самый низкий статус (наши пациенты не умирают)')
         patient_index = patient_id - 1
         status_code = self._patients_db[patient_index]
-        if status_code == 0:
-            raise MinStatusCannotDownError('Ошибка. Нельзя понизить самый низкий статус (наши пациенты не умирают)')
         self._patients_db[patient_index] = status_code - 1
 
     def get_statistics(self):
@@ -49,3 +52,11 @@ class Hospital:
     def _verify_patient_exists(self, patient_id):
         if not self.patient_exists(patient_id):
             raise PatientNotExistsError('Ошибка. В больнице нет пациента с таким ID')
+
+    def cannot_status_up_for_this_patient(self, patient_id):
+        status = self.get_patient_status_by_id(patient_id)
+        return status == "Готов к выписке"
+
+    def cannot_status_down_for_this_patient(self, patient_id):
+        status = self.get_patient_status_by_id(patient_id)
+        return status == "Тяжело болен"

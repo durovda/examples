@@ -22,8 +22,7 @@ class Commands:
     def status_up(self):
         try:
             patient_id = self._dialog_with_user.request_patient_id()
-            status = self._hospital.get_patient_status_by_id(patient_id)
-            if status == 'Готов к выписке':
+            if self._hospital.cannot_status_up_for_this_patient(patient_id):
                 discharge_confirmation = self._dialog_with_user.request_patient_discharge_confirmation()
                 if discharge_confirmation:
                     self._hospital.discharge_patient(patient_id)
