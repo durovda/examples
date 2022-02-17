@@ -1,5 +1,5 @@
 import unittest
-from tdd_trening.hospital_ivan_02.hostpital import Application, HospitalListDB
+from tdd_trening.ivan_archiv.hospital_ivan_02.hostpital import Application, HospitalListDB
 
 
 def extended_fake_inputs(chain):

@@ -1,5 +1,6 @@
 import pytest
-from model.db import HospitalListDB, NonExistentPatientIdError, MinStatusExceedError, MaxStatusExceedError
+from model.db import HospitalListDB, NonExistentPatientIdError, \
+    MinStatusExceedError, MaxStatusExceedError
 
 
 @pytest.fixture(scope="function")
@@ -12,11 +13,11 @@ def db_for_tests():
 
 
 def test_get_total_patients_count(db_for_tests):
-    assert 10 == db_for_tests.get_total_patients_count()
+    assert db_for_tests.get_total_patients_count() == 10
 
 
 def test_get_patients_count_by_status(db_for_tests):
-    assert 3 == db_for_tests._get_patients_count_by_status(2)
+    assert db_for_tests._get_patients_count_by_status(2) == 3
 
 
 def test_try_update_patient_status_below_minimum(db_for_tests):
@@ -41,7 +42,7 @@ def test_update_patient_status(db_for_tests):
 
 
 def test_get_patient_by_index(db_for_tests):
-    assert 1 == db_for_tests.get_patient_status_by_index(1)
+    assert db_for_tests.get_patient_status_by_index(1) == 1
 
 
 def test_delete_patient(db_for_tests):
@@ -54,13 +55,17 @@ def test_delete_patient(db_for_tests):
     assert len_before - 1 == len_after
 
 
-def test_delete_non_existing_patient(db_for_tests):
-    len_before = len(db_for_tests.db)
-    patient_index = 100
-    with pytest.raises(NonExistentPatientIdError):
-        db_for_tests.get_patient_status_by_index(patient_index)
-    len_after = len(db_for_tests.db)
-    assert len_before == len_after
+def test_raise_patient_status(db_for_tests):
+    db_for_tests.raise_patient_status(1)
+    assert db_for_tests.db[1] == 2
+
+
+def test_reduce_patient_status(db_for_tests):
+    db_for_tests.reduce_patient_status(1)
+    assert db_for_tests.db[1] == 0
+    with pytest.raises(MinStatusExceedError):
+        db_for_tests.reduce_patient_status(1)
+    assert db_for_tests.db[1] == 0
 
 
 def test_calc_statistics(db_for_tests):

@@ -72,7 +72,7 @@ class HospitalListDB:
         user_status = self.get_patient_status_by_index(patient_index)
         new_user_status = user_status - 1
         if new_user_status < self.min_status:
-            return (
+            raise MinStatusExceedError(
                 'У этого пациента самый низкий статус '
                 f'"{self.statuses[self.min_status]}".\n'
                 'Статус пациента не изменился, т.к. в нашей больнице '
@@ -80,7 +80,6 @@ class HospitalListDB:
             )
         else:
             self._update_patient_status(patient_index, new_user_status)
-            return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
 
     def _get_patients_count_by_status(self, status: int):
         """ Получить число пациентов с определенным статусом """

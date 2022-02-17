@@ -1,7 +1,7 @@
 class Console:
     @staticmethod
-    def input(question):
-        return input(question)
+    def input(request):
+        return input(request)
 
     @staticmethod
     def print(message):

@@ -87,3 +87,18 @@ def test_cases_of_invalid_data_entry():
     app = make_application(hospital, console)
 
     app.main()
+
+
+# def test_discharge_patient():
+#     hospital = Hospital([1, 3, 1])
+#     console = MockConsole()
+#     console.add_expected_request_and_response('Введите команду: ', 'выписать пациента')
+#     console.add_expected_request_and_response('Введите ID пациента: ', '2')
+#     console.add_expected_output_message('Пациент выписан из больницы')
+#     console.add_expected_request_and_response('Введите команду: ', 'стоп')
+#     console.add_expected_output_message('Сеанс завершён.')
+#     app = make_application(hospital, console)
+#
+#     app.main()
+#
+#     assert hospital._patients_db == [1, 1]

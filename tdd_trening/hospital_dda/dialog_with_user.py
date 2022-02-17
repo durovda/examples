@@ -1,4 +1,4 @@
-from tdd_trening.hospital_dda.application import CommandType
+from tdd_trening.hospital_dda.command_type import CommandType
 from tdd_trening.hospital_dda.exceptions import PatientIdNotIntegerError
 
 
@@ -34,7 +34,7 @@ class DialogWithUser:
             id_as_text = self._console.input('Введите ID пациента: ')
             return int(id_as_text)
         except ValueError:
-            raise PatientIdNotIntegerError('Ошибка ввода. ID пациента должно быть числом (целым, положительным)')
+            raise PatientIdNotIntegerError
 
     def request_patient_discharge_confirmation(self):
         confirmation_text = self._console.input('Желаете этого клиента выписать? (да/нет) ')

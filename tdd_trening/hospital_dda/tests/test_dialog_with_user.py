@@ -3,7 +3,7 @@ import pytest
 from tdd_trening.hospital_dda.dialog_with_user import DialogWithUser
 from tdd_trening.hospital_dda.exceptions import PatientIdNotIntegerError
 from tdd_trening.hospital_dda.mock_console import MockConsole
-from tdd_trening.hospital_dda.application import CommandType
+from tdd_trening.hospital_dda.command_type import CommandType
 
 
 def test_request_patient_id():

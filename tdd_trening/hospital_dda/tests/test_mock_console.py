@@ -35,3 +35,12 @@ def test_print_when_invalid_output_message():
 
     with pytest.raises(AssertionError):
         console.print('Статус пациента: "Тяжело болен"')
+
+
+def test_print_when_invalid_order_of_output_message():
+    console = MockConsole()
+    console.add_expected_output_message('Первое сообщение')
+    console.add_expected_output_message('Второе сообщение')
+
+    with pytest.raises(AssertionError):
+        console.print('Второе сообщение')

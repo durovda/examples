@@ -1,4 +1,4 @@
-from model.db import NonExistentPatientIdError, HospitalListDB
+from model.db import NonExistentPatientIdError, HospitalListDB, MinStatusExceedError
 
 
 class NotIntegerError(Exception):
@@ -10,18 +10,11 @@ class YesOrNoError(Exception):
 
 
 class Application:
-    def __init__(self, db=None, statuses=None):
-        if statuses is None:
-            statuses = {
-                0: 'Тяжело болен',
-                1: 'Болен',
-                2: 'Слегка болен',
-                3: 'Готов к выписке',
-            }
-        self.db_interface: HospitalListDB = db
-        self.statuses = statuses
-        self.min_status = min(self.statuses.keys())
-        self.max_status = max(self.statuses.keys())
+    def __init__(self, db=None):
+        if db is None:
+            self.db_interface = HospitalListDB([])
+        else:
+            self.db_interface = db
         self.time_to_exit = False
         self._input_method = input
         self._print_method = print
@@ -35,14 +28,14 @@ class Application:
             user_status = self.db_interface.get_patient_status_by_index(index)
             new_user_status = user_status + 1
 
-            if new_user_status < len(self.statuses):
+            if new_user_status < len(self.db_interface.statuses):
                 self.db_interface.raise_patient_status(index)
-                return f'Новый статус пациента: "{self.statuses[new_user_status]}"'
+                return f'Новый статус пациента: "{self.db_interface.statuses[new_user_status]}"'
             else:
                 confirmation_about_discharge_from_hospital = \
                     self._request_confirmation_about_discharge_from_hostpital()
                 if not confirmation_about_discharge_from_hospital:
-                    return f'Пациент остался в статусе "{self.statuses[new_user_status - 1]}"'
+                    return f'Пациент остался в статусе "{self.db_interface.statuses[new_user_status - 1]}"'
                 else:
                     self.db_interface.delete_patient(index)
                     return f'Пациент с ID={index + 1} выписан.'
@@ -56,8 +49,12 @@ class Application:
         """ Понизить статус пациента """
         try:
             index = self._request_for_index()
-            result = self.db_interface.reduce_patient_status(index)
-            return result
+            self.db_interface.reduce_patient_status(index)
+            new_status = self.db_interface.get_patient_status_by_index(index)
+            return f'Новый статус пациента: "{self.db_interface.statuses[new_status]}"'
+
+        except MinStatusExceedError as err:
+            return str(err)
         except (NonExistentPatientIdError, NotIntegerError) as err:
             return str(err)
 
@@ -66,7 +63,7 @@ class Application:
         try:
             index = self._request_for_index()
             user_status = self.db_interface.get_patient_status_by_index(index)
-            return self.statuses[user_status]
+            return self.db_interface.statuses[user_status]
         except (NonExistentPatientIdError, NotIntegerError) as err:
             return str(err)
 
@@ -105,7 +102,7 @@ class Application:
 
         statistics_text = [
             self.text_statistics_separate(
-                stat=self.statuses[k], count=v)
+                stat=self.db_interface.statuses[k], count=v)
             for k, v in patients_groups_stat.items()]
 
         return total_text + '\n'.join(statistics_text)
@@ -118,7 +115,7 @@ class Application:
     def _request_confirmation_about_discharge_from_hostpital(self):
         """ Отоборазить текст о возможной выписке и спросить о ней """
         text = 'У этого пациента самый высокий статус ' \
-               f'"{self.statuses[self.max_status]}".\n' \
+               f'"{self.db_interface.statuses[self.db_interface.max_status]}".\n' \
                'Желаете ли выписать этого пациента?'
         self._print_method(text)
         voice = self._input_method('(да/нет) ')
